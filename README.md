@@ -1,3 +1,28 @@
+# TalesTrove
+
+## Introduction
+
+TalesTrove is a browser extension that allows users to easily save links to their favorite fictional stories and series.
+
+## Supported Sites
+
+- FanFiction.net
+  - Favorites
+  - Following
+- Archive Of Our Own
+  - Work Subscriptions
+  - Series Subscriptions
+  - Author Subscriptions
+
+## Sites Planned for Support
+
+- SpaceBattles
+  - Following Threads
+- QuestionableQuesting
+  - Following Threads
+
+---
+
 This is a [Plasmo extension](https://docs.plasmo.com/) project bootstrapped with [`plasmo init`](https://www.npmjs.com/package/plasmo).
 
 ## Getting Started
