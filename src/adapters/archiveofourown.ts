@@ -1,18 +1,6 @@
-// TODO: Don't forget to add rate limits
-type workObjectType = {
-  id: string;
-  title: string;
-  link: string;
-  authorName: string[];
-  authorLink: string[];
-};
+import type { authorType, workObjectType } from "../types";
 
-type authorType = {
-  name: string;
-  link: string;
-};
-
-function cleanArray(array: (workObjectType | authorType)[]) {
+function cleanArray(array: workObjectType[] | authorType[]) {
   // Use a Map to keep track of unique names
   const uniqueNamesMap = new Map();
 
@@ -40,6 +28,8 @@ async function getArchiveOfOurOwnData(username: string) {
   const series: workObjectType[] = [];
   let numberOfPages = 1;
   let i = 1;
+  const delay = (ms: number) =>
+    new Promise((resolve) => setTimeout(resolve, ms));
 
   do {
     try {
@@ -48,8 +38,12 @@ async function getArchiveOfOurOwnData(username: string) {
       }
       const response = await fetch(ao3SubscriptionURL, {
         mode: "cors",
-        credentials: "include"
+        credentials: "include",
+        headers: {
+          "User-Agent": navigator.userAgent
+        }
       });
+
       const htmlText = await response.text();
 
       const parser = new DOMParser();
@@ -153,6 +147,10 @@ async function getArchiveOfOurOwnData(username: string) {
           (listItem) => listItem.textContent!
         );
         numberOfPages = +navChildren[navChildren.length - 2];
+
+        if (i < numberOfPages) {
+          await delay(2000);
+        }
       }
     } catch (error) {
       console.error(error);
@@ -166,7 +164,7 @@ async function getArchiveOfOurOwnData(username: string) {
   const worksClean = cleanArray(works);
   const seriesClean = cleanArray(series);
 
-  return { authorsClean, worksClean, seriesClean };
+  return { authors: authorsClean, works: worksClean, series: seriesClean };
 }
 
 export default getArchiveOfOurOwnData;
