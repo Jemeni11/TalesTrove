@@ -3,7 +3,7 @@
     <img src="assets/logo.png" alt="Logo" width="80" height="80">
   </a>
 
-  <h3 align="center">TalesTrove</h3>
+  <h1 align="center">TalesTrove</h1>
 
   <p align="center">
     TalesTrove is a browser extension that allows users to easily save links to their favorite fictional stories and series from various platforms.
