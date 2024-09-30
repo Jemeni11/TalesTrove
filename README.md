@@ -42,6 +42,9 @@
 
 ## Usage
 
+> [!WARNING]
+> You must be logged in to the respective websites to use the extension.
+
 1. Click on the TalesTrove icon in your browser's extension area.
 2. Configure your preferences for each supported website.
 3. Use the "Download Links" section to export your saved links.
