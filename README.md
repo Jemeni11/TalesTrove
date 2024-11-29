@@ -49,6 +49,24 @@
 2. Configure your preferences for each supported website.
 3. Use the "Download Links" section to export your saved links.
 
+## FAQ
+
+- **Why do you need my Archive username?**
+
+  Unlike other sites, Archive Of Our Own requires a username to access user-specific subscriptions (such as works, series, and authors). The extension needs to link to your account to retrieve this data.
+
+- **Why do I need to be logged in?**
+
+  You need to be logged in to your accounts on supported platforms because the extension interacts with personalized data—such as your favorites, followed stories, or subscriptions—which requires authentication to access. Without logging in, we can't fetch this data for you.
+
+- **Does this extension save/steal any of my data?**
+
+  Nope, this extension doesn’t collect, store, or share any of your data. We don’t send your info to third parties, and heck, we don’t even track telemetry. So if this crashes... well, (no ~~beta~~ data, we die like men!).
+
+  The only data this extension stores is what you save when you click "Download". Your saved links are only stored locally on your own computer—we don’t hoard or send that info anywhere. It’s all private, secure, and stays with you.
+
+  Additionally, this project is open source, so you can review the code yourself (or have someone who knows React and TypeScript take a look) to ensure we're staying true to our word.
+
 ## Development
 
 This project was built using the [Plasmo](https://docs.plasmo.com/) framework.
