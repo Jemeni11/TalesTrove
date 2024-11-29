@@ -1,6 +1,6 @@
 <div align="center">
   <a href="https://github.com/Jemeni11/Tales-Trove">
-    <img src="src/assets/logo.png" alt="Logo" width="80" height="80">
+    <img src="assets/icon.png" alt="Logo" width="80" height="80">
   </a>
 
   <h1 align="center">TalesTrove</h1>
@@ -23,18 +23,18 @@
   - Work Subscriptions
   - Series Subscriptions
   - Author Subscriptions
+- QuestionableQuesting
+  - Following Threads
 
 ## Sites Planned for Support
 
 - SpaceBattles
   - Following Threads
-- QuestionableQuesting
-  - Following Threads
 
 ## Features
 
 - Save favorites and followed stories from various websites.
-- Export saved links in various formats (JSON, TXT, CSV, HTML).
+- Export saved links in various formats (JSON, TXT, CSV, HTML, Bookmark HTML File).
 
 ## Installation
 
