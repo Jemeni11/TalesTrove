@@ -1,33 +1,49 @@
-import type { authorType, workObjectType } from "../types";
+import type { authorType, SubscriptionResult, workObjectType } from "../types";
 
-function cleanArray(array: workObjectType[] | authorType[]) {
-  // Use a Map to keep track of unique names
+function cleanWorkArray(array: workObjectType[]): workObjectType[] {
   const uniqueNamesMap = new Map();
 
-  // Filter the array based on unique names
-  const uniqueArray = array.filter((obj) => {
-    // Check if the name is already in the Map
+  return array.filter((obj) => {
     if (uniqueNamesMap.has(obj.link)) {
-      return false; // Duplicate found, exclude from the result
+      return false;
     }
 
-    // Add the name to the Map to mark it as seen
     uniqueNamesMap.set(obj.link, true);
-    return true; // Include in the result
+    return true;
   });
-
-  return uniqueArray;
 }
 
-async function getArchiveOfOurOwnData(username: string) {
-  let ao3SubscriptionURL = `https://archiveofourown.org/users/${username}/subscriptions`;
+function cleanAuthorArray(array: authorType[]): authorType[] {
+  const uniqueNamesMap = new Map();
+
+  return array.filter((obj) => {
+    if (uniqueNamesMap.has(obj.link)) {
+      return false;
+    }
+
+    uniqueNamesMap.set(obj.link, true);
+    return true;
+  });
+}
+
+async function getArchiveOfOurOwnData(
+  username: string,
+  type?: "authors" | "works" | "series"
+): Promise<SubscriptionResult> {
+  const baseURL = `https://archiveofourown.org/users/${username}/subscriptions`;
+  const typeQueryParam = type ? `?type=${type}` : "";
+  let ao3SubscriptionURL = `${baseURL}${typeQueryParam}`;
+
   const createAO3SubscriptionURL = (pageNumber: string) =>
-    `https://archiveofourown.org/users/${username}/subscriptions?page=${pageNumber}`;
+    `${baseURL}${typeQueryParam}&page=${pageNumber}`;
+
   const authors: authorType[] = [];
   const works: workObjectType[] = [];
   const series: workObjectType[] = [];
+
   let numberOfPages = 1;
   let i = 1;
+
   const delay = (ms: number) =>
     new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -36,6 +52,7 @@ async function getArchiveOfOurOwnData(username: string) {
       if (i > 1) {
         ao3SubscriptionURL = createAO3SubscriptionURL(i.toString());
       }
+
       const response = await fetch(ao3SubscriptionURL, {
         mode: "cors",
         credentials: "include",
@@ -53,6 +70,7 @@ async function getArchiveOfOurOwnData(username: string) {
       const dataLinkTable: HTMLDListElement = main.querySelector(
         "dl.subscription.index.group"
       )!;
+
       const links = Array.from(
         dataLinkTable.querySelectorAll("dt")!,
         (link) => {
@@ -62,20 +80,14 @@ async function getArchiveOfOurOwnData(username: string) {
       );
 
       for (let linkArray of links) {
-        // if linkArray has one child
-        // Does that child have the text "Anonymous"?
-        //  Yes, then it's a work and Anonymous is the author
-        //  No, then it's an author
-        // if linkArray has two or more children
-        // Check if it has the text "Series"
-        //  Yes, then it's a series
-        //  No, then it's a work
         const linkArrayLength = linkArray.length;
+
         if (linkArrayLength === 1) {
           const link = linkArray[0];
           const linkTextContent = link
             .textContent!.replace(/\n\s+/g, " ")
             .trim();
+
           if (linkTextContent.includes("Anonymous")) {
             const isSeries = link.pathname.includes("/series/");
 
@@ -159,12 +171,21 @@ async function getArchiveOfOurOwnData(username: string) {
     }
   } while (i <= numberOfPages);
 
-  // Remove duplicates from the arrays
-  const authorsClean = cleanArray(authors);
-  const worksClean = cleanArray(works);
-  const seriesClean = cleanArray(series);
+  // Return only the requested type, or all types if no type specified
+  return {
+    authors: type === "authors" ? cleanAuthorArray(authors) : undefined,
+    works: type === "works" ? cleanWorkArray(works) : undefined,
+    series: type === "series" ? cleanWorkArray(series) : undefined
+  };
+  // if (type === "authors") return { authors  };
+  // if (type === "works") return { works };
+  // if (type === "series") return { series };
 
-  return { authors: authorsClean, works: worksClean, series: seriesClean };
+  // return {
+  //   authors: cleanArray(authors),
+  //   works: cleanArray(works),
+  //   series: cleanArray(series)
+  // };
 }
 
 export default getArchiveOfOurOwnData;
