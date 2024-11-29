@@ -1,30 +1,10 @@
-type StoryData = {
-  storyLink: string;
-  storyTitle: string;
-};
+import type { FFData, FFProcessedStoryData } from "~types";
 
-type AuthorData = {
-  authorLink: string;
-  authorName: string;
-};
+const FFFavoritesMobileURL = "https://m.fanfiction.net/m/f_story.php";
 
-type FanFictionData = {
-  storyData: StoryData;
-  authorData: AuthorData;
-  dateCreated: string;
-  dateUpdated: string;
-};
+const FFFollowingMobileURL = "https://m.fanfiction.net/m/a_story.php";
 
-type ProcessedStoryData = {
-  authorLink: string;
-  authorName: string;
-  storyLink: string;
-  storyTitle: string;
-  dateCreated: string;
-  dateUpdated: string;
-};
-
-function processStoryData(data: FanFictionData): ProcessedStoryData {
+function processStoryData(data: FFData): FFProcessedStoryData {
   const { authorData, storyData, dateCreated, dateUpdated } = data;
 
   const authorLink = "https://www.fanfiction.net" + authorData.authorLink;
@@ -51,7 +31,7 @@ function processStoryData(data: FanFictionData): ProcessedStoryData {
 
 async function getFanFictionNetStoryData(
   url: string
-): Promise<ProcessedStoryData[]> {
+): Promise<FFProcessedStoryData[]> {
   try {
     const response = await fetch(url, {
       mode: "cors",
@@ -90,7 +70,7 @@ async function getFanFictionNetStoryData(
     });
 
     const processedStoryDataList = actualData.map((data) => {
-      const fanFictionData: FanFictionData = {
+      const fanFictionData: FFData = {
         storyData: {
           storyLink: data[0]![0]!,
           storyTitle: data[0]![1]!
@@ -112,4 +92,10 @@ async function getFanFictionNetStoryData(
   }
 }
 
-export default getFanFictionNetStoryData;
+export async function getFFFollowingData() {
+  return await getFanFictionNetStoryData(FFFollowingMobileURL);
+}
+
+export async function getFFFavoritesData() {
+  return await getFanFictionNetStoryData(FFFavoritesMobileURL);
+}
