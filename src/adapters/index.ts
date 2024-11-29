@@ -1,9 +1,10 @@
 import getArchiveOfOurOwnData from "./archiveofourown";
-import getFanFictionNetStoryData from "./fanfictiondotnet";
+import { getFFFavoritesData, getFFFollowingData } from "./fanfictiondotnet";
 import getQuestionableQuestingData from "./questionablequesting";
 
 export {
   getArchiveOfOurOwnData,
-  getFanFictionNetStoryData,
+  getFFFavoritesData,
+  getFFFollowingData,
   getQuestionableQuestingData
 };
