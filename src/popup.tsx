@@ -1,181 +1,346 @@
+import logo from "data-base64:../assets/icon.png";
+import { useAtomValue } from "jotai";
+import {
+  Bookmark,
+  BookOpen,
+  ChevronDown,
+  Download,
+  FileText,
+  User,
+  Users
+} from "lucide-react";
 import { useState } from "react";
 
 import {
   getArchiveOfOurOwnData,
-  getFanFictionNetStoryData,
+  getFFFavoritesData,
+  getFFFollowingData,
   getQuestionableQuestingData
 } from "~adapters";
-import { CustomDetails, Input } from "~components";
+import { Button, Input, Section, SwitchItem } from "~components";
+import { cn } from "~lib/utils";
+import {
+  fileFormatAtom,
+  sitesDataAtom,
+  useResetAllOptions,
+  useSetAO3Username,
+  useToggleFileFormat,
+  useToggleSitesData
+} from "~store";
+import type {
+  FFProcessedStoryData,
+  QQDataType,
+  sitesDataTypeKey,
+  SubscriptionResult
+} from "~types";
+import { handleExport } from "~utils";
+
+import {
+  BookmarksHTMLIcon,
+  CSVIcon,
+  HTMLIcon,
+  JSONIcon,
+  TXTIcon
+} from "./icons";
 
 import "./style.css";
 
-import Logo from "data-base64:../assets/icon.png";
+export default function TalesTrove() {
+  const [expandedSections, setExpandedSections] = useState<{
+    fanfiction: boolean;
+    archiveOfOurOwn: boolean;
+    questionableQuesting: boolean;
+  }>({
+    fanfiction: false,
+    archiveOfOurOwn: false,
+    questionableQuesting: false
+  });
 
-export default function IndexPopup() {
-  const [data, setData] = useState("");
+  const fileFormatState = useAtomValue(fileFormatAtom);
+  const sitesDataState = useAtomValue(sitesDataAtom);
+
+  const resetAllOptions = useResetAllOptions();
+  const setAO3Username = useSetAO3Username();
+  const toggleFileFormat = useToggleFileFormat();
+  const toggleSitesData = useToggleSitesData();
+
+  const [isDownloadOpen, setIsDownloadOpen] = useState(false);
+
+  const [QQData, setQQData] = useState<QQDataType[]>([]);
+  const [AO3Data, setAO3Data] = useState<SubscriptionResult>({
+    authors: [],
+    works: [],
+    series: []
+  });
+  const [FFFollowingData, setFFFollowingData] = useState<
+    FFProcessedStoryData[]
+  >([]);
+  const [FFFavoritesData, setFFFavoritesData] = useState<
+    FFProcessedStoryData[]
+  >([]);
+
+  const toggleSection = (section: keyof typeof expandedSections) => {
+    setExpandedSections((prev) => ({ ...prev, [section]: !prev[section] }));
+  };
+
+  type SelectedOptions = Record<
+    Partial<sitesDataTypeKey>,
+    { subOptions: string[]; username?: string }
+  >;
+
+  const handleDownload = async () => {
+    const selectedOptions_: SelectedOptions | {} = {};
+
+    for (const site in sitesDataState) {
+      const siteData = sitesDataState[site as sitesDataTypeKey];
+      const subOptions = [];
+      let username: string | undefined;
+
+      for (const key in siteData) {
+        if (key === "username") {
+          username = siteData[key];
+        } else if (siteData[key]) {
+          subOptions.push(key);
+        }
+      }
+
+      if (subOptions.length > 0 || username) {
+        selectedOptions_[site] = { subOptions, ...(username && { username }) };
+      }
+    }
+
+    const selectedOptions = selectedOptions_ as SelectedOptions;
+    const selectedOptionsKeys = Object.keys(selectedOptions);
+
+    if ("questionableQuesting" in selectedOptionsKeys) {
+      const qqData = await getQuestionableQuestingData();
+      setQQData(qqData);
+    }
+
+    if ("archiveOfOurOwn" in selectedOptionsKeys) {
+      const ao3Data = await getArchiveOfOurOwnData(
+        sitesDataState.archiveOfOurOwn.username
+      );
+      setAO3Data(ao3Data);
+    }
+
+    if ("fanfiction" in selectedOptionsKeys) {
+      if ("following" in selectedOptions.fanfiction.subOptions) {
+        const ffFollowingData = await getFFFollowingData();
+        setFFFollowingData(ffFollowingData);
+      }
+
+      if ("favorites" in selectedOptions.fanfiction.subOptions) {
+        const fFavoritesData = await getFFFavoritesData();
+        setFFFavoritesData(fFavoritesData);
+      }
+    }
+
+    const selectedFormats = Object.entries(fileFormatState)
+      .filter(([key, isSelected]) => key in fileFormatState && isSelected)
+      .map(([format]) => format);
+
+    for (const site in selectedOptions) {
+      for (const format of selectedFormats) {
+        switch (site) {
+          case "archiveOfOurOwn": {
+            handleExport(AO3Data.works, "ao3_works", format);
+            handleExport(AO3Data.authors, "ao3_authors", format);
+            handleExport(AO3Data.series, "ao3_series", format);
+            break;
+          }
+          case "fanfiction": {
+            if (selectedOptions.fanfiction.subOptions.includes("following")) {
+              handleExport(FFFollowingData, "ff_following", format);
+            }
+            if (selectedOptions.fanfiction.subOptions.includes("favorites")) {
+              handleExport(FFFavoritesData, "ff_favorites", format);
+            }
+            break;
+          }
+          case "questionableQuesting": {
+            handleExport(QQData, "qq", format);
+            break;
+          }
+        }
+      }
+    }
+  };
+
+  const selectedSitesCount = Object.values(sitesDataState)
+    .flatMap((site) => Object.values(site))
+    .filter(Boolean).length;
+
+  const selectedFormatsCount =
+    Object.values(fileFormatState).filter(Boolean).length;
 
   return (
-    <div
-      className="!min-w-80 min-h-96 bg-white rounded-xl "
-      style={{
-        padding: 16
-      }}>
-      <Header />
-      <h2 className="text-lg font-medium mb-2">Supported Sites</h2>
-      <div className="grid grid-cols-1 gap-y-3">
-        <FanFictionDotNet />
-        <ArchiveOfOurOwn />
-        <QuestionableQuesting />
+    <div className="w-[350px] bg-background text-foreground overflow-y-auto shadow-lg flex flex-col">
+      <div className="p-4 flex items-center gap-x-4">
+        <img src={logo} alt="logo" width={32} height={32} />
+        <h1 className="text-2xl font-bold text-black">TalesTrove</h1>
       </div>
-    </div>
-  );
-}
 
-function Header() {
-  return (
-    <div className="flex items-center mb-4 gap-4">
-      <img src={Logo} alt="Logo" className="size-24 rounded-lg object-cover" />
-      <div>
-        <h1 className="text-xl/tight font-bold text-gray-900">TalesTrove</h1>
-        <p className="mt-0.5 text-gray-700">
-          TalesTrove is a browser extension that allows users to easily save
-          links to their favorite fictional stories and series.
+      <div className="p-4 flex-grow">
+        <Section
+          title="FanFiction.Net"
+          expanded={expandedSections.fanfiction}
+          onToggle={() => toggleSection("fanfiction")}>
+          <SwitchItem
+            icon={<Bookmark className="w-4 h-4" />}
+            label="Favorites"
+            checked={sitesDataState.fanfiction.favorites}
+            onCheckedChange={() => toggleSitesData("fanfiction", "favorites")}
+          />
+          <SwitchItem
+            icon={<User className="w-4 h-4" />}
+            label="Following"
+            checked={sitesDataState.fanfiction.following}
+            onCheckedChange={() => toggleSitesData("fanfiction", "following")}
+          />
+        </Section>
+
+        <Section
+          title="Archive Of Our Own"
+          expanded={expandedSections.archiveOfOurOwn}
+          onToggle={() => toggleSection("archiveOfOurOwn")}>
+          <div className="mb-4">
+            <label
+              htmlFor="archiveUsername"
+              className="block text-sm font-medium mb-1">
+              Archive Username
+            </label>
+            <Input
+              id="archiveUsername"
+              placeholder="e.g. stoleLightningNotThunder"
+              className="w-full"
+              value={sitesDataState.archiveOfOurOwn.username}
+              onChange={(e) => setAO3Username(e.target.value)}
+            />
+          </div>
+          <SwitchItem
+            icon={<BookOpen className="w-4 h-4" />}
+            label="Work Subscriptions"
+            checked={sitesDataState.archiveOfOurOwn.work}
+            onCheckedChange={() => toggleSitesData("archiveOfOurOwn", "work")}
+          />
+          <SwitchItem
+            icon={<FileText className="w-4 h-4" />}
+            label="Series Subscriptions"
+            checked={sitesDataState.archiveOfOurOwn.series}
+            onCheckedChange={() => toggleSitesData("archiveOfOurOwn", "series")}
+          />
+          <SwitchItem
+            icon={<Users className="w-4 h-4" />}
+            label="Author Subscriptions"
+            checked={sitesDataState.archiveOfOurOwn.author}
+            onCheckedChange={() => toggleSitesData("archiveOfOurOwn", "author")}
+          />
+        </Section>
+
+        <Section
+          title="QuestionableQuesting"
+          expanded={expandedSections.questionableQuesting}
+          onToggle={() => toggleSection("questionableQuesting")}>
+          <SwitchItem
+            icon={<Bookmark className="w-4 h-4" />}
+            label="Followed Threads"
+            checked={sitesDataState.questionableQuesting.following}
+            onCheckedChange={() =>
+              toggleSitesData("questionableQuesting", "following")
+            }
+          />
+        </Section>
+      </div>
+
+      <div className="mt-auto p-4 bg-muted">
+        <details
+          className="group"
+          open={isDownloadOpen}
+          onToggle={(e) => setIsDownloadOpen(e.currentTarget.open)}>
+          <summary className="flex items-center justify-between cursor-pointer list-none">
+            <span className="text-lg font-semibold">Download Files</span>
+            <ChevronDown
+              className={cn(
+                "h-5 w-5 transition-transform duration-200",
+                isDownloadOpen ? "transform rotate-180" : ""
+              )}
+            />
+          </summary>
+          <div className="mt-2 space-y-2">
+            <div className="flex justify-between items-center">
+              <span className="text-sm">
+                {selectedSitesCount} Sites, {selectedFormatsCount} Formats
+                Selected
+              </span>
+
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={resetAllOptions}
+                // disabled={selectedFormatsCount + selectedSitesCount <= 0}
+                className="text-primary hover:text-primary">
+                Reset
+              </Button>
+            </div>
+            <SwitchItem
+              id="json"
+              icon={<JSONIcon />}
+              label="JSON"
+              checked={fileFormatState.json}
+              onCheckedChange={() => toggleFileFormat("json")}
+            />
+            <SwitchItem
+              id="txt"
+              icon={<TXTIcon />}
+              label="TXT"
+              checked={fileFormatState.txt}
+              onCheckedChange={() => toggleFileFormat("txt")}
+            />
+            <SwitchItem
+              id="csv"
+              icon={<CSVIcon />}
+              label="CSV"
+              checked={fileFormatState.csv}
+              onCheckedChange={() => toggleFileFormat("csv")}
+            />
+            <SwitchItem
+              id="html"
+              icon={<HTMLIcon />}
+              label="HTML"
+              checked={fileFormatState.html}
+              onCheckedChange={() => toggleFileFormat("html")}
+            />
+            <SwitchItem
+              id="bookmarksHtml"
+              icon={<BookmarksHTMLIcon />}
+              label="Bookmarks HTML"
+              checked={fileFormatState.bookmarksHtml}
+              onCheckedChange={() => toggleFileFormat("bookmarksHtml")}
+            />
+          </div>
+        </details>
+        <Button
+          onClick={handleDownload}
+          className="w-full rounded mt-4 bg-[hsl(203,24%,27%)] text-white hover:bg-[hsl(203,11%,14%)]"
+          disabled={selectedFormatsCount === 0}>
+          <Download className="w-4 h-4 mr-2" />
+          Download Files
+        </Button>
+      </div>
+
+      <div className="w-full text-center mt-4">
+        <p className="text-sm text-gray-700">
+          Made with ❤️ by{" "}
+          <a
+            href="https://www.github.com/Jemeni11"
+            target="_blank"
+            rel="noreferrer"
+            className="text-blue-500">
+            Jemeni
+          </a>
         </p>
       </div>
     </div>
-  );
-}
-
-function FanFictionDotNet() {
-  return (
-    <CustomDetails
-      title="FanFiction.Net"
-      children={
-        <div>
-          <ul className="space-y-1 border-t border-gray-200 p-4">
-            <li>
-              <label
-                htmlFor="Following"
-                className="inline-flex items-center gap-2">
-                <input
-                  type="checkbox"
-                  id="Following"
-                  className="size-5 rounded border-gray-300"
-                />
-
-                <span className="text-sm font-medium text-gray-700">
-                  Following
-                </span>
-              </label>
-            </li>
-
-            <li>
-              <label
-                htmlFor="Favorites"
-                className="inline-flex items-center gap-2">
-                <input
-                  type="checkbox"
-                  id="Favorites"
-                  className="size-5 rounded border-gray-300"
-                />
-
-                <span className="text-sm font-medium text-gray-700">
-                  Favorites
-                </span>
-              </label>
-            </li>
-          </ul>
-        </div>
-      }
-    />
-  );
-}
-
-function ArchiveOfOurOwn() {
-  const [username, setUsername] = useState("");
-
-  return (
-    <CustomDetails
-      title="ArchiveOfOurOwn"
-      children={
-        <div className="p-4">
-          <Input state={username} setState={setUsername} className="mb-4" />
-          <ul className="space-y-1 border-gray-200">
-            <li>
-              <label htmlFor="Works" className="inline-flex items-center gap-2">
-                <input
-                  type="checkbox"
-                  id="Works"
-                  className="size-5 rounded border-gray-300"
-                />
-
-                <span className="text-sm font-medium text-gray-700">Works</span>
-              </label>
-            </li>
-
-            <li>
-              <label
-                htmlFor="Series"
-                className="inline-flex items-center gap-2">
-                <input
-                  type="checkbox"
-                  id="Series"
-                  className="size-5 rounded border-gray-300"
-                />
-
-                <span className="text-sm font-medium text-gray-700">
-                  Series
-                </span>
-              </label>
-            </li>
-
-            <li>
-              <label
-                htmlFor="Authors"
-                className="inline-flex items-center gap-2">
-                <input
-                  type="checkbox"
-                  id="Authors"
-                  className="size-5 rounded border-gray-300"
-                />
-
-                <span className="text-sm font-medium text-gray-700">
-                  Authors
-                </span>
-              </label>
-            </li>
-          </ul>
-        </div>
-      }
-    />
-  );
-}
-
-function QuestionableQuesting() {
-  return (
-    <CustomDetails
-      title="QuestionableQuesting"
-      children={
-        <div>
-          <ul className="space-y-1 border-t border-gray-200 p-4">
-            <li>
-              <label
-                htmlFor="Following"
-                className="inline-flex items-center gap-2">
-                <input
-                  type="checkbox"
-                  id="Following"
-                  className="size-5 rounded border-gray-300"
-                />
-
-                <span className="text-sm font-medium text-gray-700">
-                  Followed Threads
-                </span>
-              </label>
-            </li>
-          </ul>
-        </div>
-      }
-    />
   );
 }
