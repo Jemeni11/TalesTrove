@@ -1,9 +1,4 @@
-type QQDataType = {
-  storyLink: string;
-  storyName: string;
-  authorLink: string;
-  authorName: string;
-};
+import type { QQDataType } from "~types";
 
 function cleanArray(array: QQDataType[]) {
   // Use a Map to keep track of unique names
@@ -35,6 +30,7 @@ async function getQuestionableQuestingData() {
 
   let numberOfPages = 1;
   let i = 1;
+
   const delay = (ms: number) =>
     new Promise((resolve) => setTimeout(resolve, ms));
 
