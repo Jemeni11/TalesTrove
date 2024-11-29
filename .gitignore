@@ -31,3 +31,6 @@ dist/
 
 # typescript
 .tsbuildinfo
+
+# vscode
+.vscode
