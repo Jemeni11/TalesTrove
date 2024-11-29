@@ -1,6 +1,6 @@
 <div align="center">
   <a href="https://github.com/Jemeni11/Tales-Trove">
-    <img src="assets/logo.png" alt="Logo" width="80" height="80">
+    <img src="src/assets/logo.png" alt="Logo" width="80" height="80">
   </a>
 
   <h1 align="center">TalesTrove</h1>
