@@ -1,6 +1,6 @@
-import { ChevronDown } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
+import { ChevronDown } from "~icons";
 import { cn } from "~lib/utils";
 
 export default function Section({
