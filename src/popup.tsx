@@ -1,14 +1,5 @@
 import logo from "data-base64:../assets/icon.png";
 import { useAtomValue } from "jotai";
-import {
-  Bookmark,
-  BookOpen,
-  ChevronDown,
-  Download,
-  FileText,
-  User,
-  Users
-} from "lucide-react";
 import { useState } from "react";
 
 import {
@@ -18,6 +9,20 @@ import {
   getQuestionableQuestingData
 } from "~adapters";
 import { Button, Input, Section, SwitchItem } from "~components";
+import {
+  Bookmark,
+  BookmarksHTMLIcon,
+  BookOpen,
+  ChevronDown,
+  CSVIcon,
+  Download,
+  FileText,
+  HTMLIcon,
+  JSONIcon,
+  TXTIcon,
+  User,
+  Users
+} from "~icons";
 import { cn } from "~lib/utils";
 import {
   fileFormatAtom,
@@ -34,14 +39,6 @@ import type {
   SubscriptionResult
 } from "~types";
 import { handleExport } from "~utils";
-
-import {
-  BookmarksHTMLIcon,
-  CSVIcon,
-  HTMLIcon,
-  JSONIcon,
-  TXTIcon
-} from "./icons";
 
 import "./style.css";
 
@@ -89,81 +86,99 @@ export default function TalesTrove() {
   >;
 
   const handleDownload = async () => {
-    const selectedOptions_: SelectedOptions | {} = {};
+    try {
+      const selectedOptions_: SelectedOptions | {} = {};
 
-    for (const site in sitesDataState) {
-      const siteData = sitesDataState[site as sitesDataTypeKey];
-      const subOptions = [];
-      let username: string | undefined;
+      for (const site in sitesDataState) {
+        const siteData = sitesDataState[site as sitesDataTypeKey];
+        const subOptions = [];
+        let username: string | undefined;
 
-      for (const key in siteData) {
-        if (key === "username") {
-          username = siteData[key];
-        } else if (siteData[key]) {
-          subOptions.push(key);
+        for (const key in siteData) {
+          if (key === "username") {
+            username = siteData[key];
+          } else if (siteData[key]) {
+            subOptions.push(key);
+          }
+        }
+
+        if (subOptions.length > 0 || username) {
+          selectedOptions_[site] = {
+            subOptions,
+            ...(username && { username })
+          };
         }
       }
 
-      if (subOptions.length > 0 || username) {
-        selectedOptions_[site] = { subOptions, ...(username && { username }) };
-      }
-    }
+      const selectedOptions = selectedOptions_ as SelectedOptions;
+      const selectedOptionsKeys = Object.keys(selectedOptions);
 
-    const selectedOptions = selectedOptions_ as SelectedOptions;
-    const selectedOptionsKeys = Object.keys(selectedOptions);
+      const fetchPromises = [];
 
-    if ("questionableQuesting" in selectedOptionsKeys) {
-      const qqData = await getQuestionableQuestingData();
-      setQQData(qqData);
-    }
-
-    if ("archiveOfOurOwn" in selectedOptionsKeys) {
-      const ao3Data = await getArchiveOfOurOwnData(
-        sitesDataState.archiveOfOurOwn.username
-      );
-      setAO3Data(ao3Data);
-    }
-
-    if ("fanfiction" in selectedOptionsKeys) {
-      if ("following" in selectedOptions.fanfiction.subOptions) {
-        const ffFollowingData = await getFFFollowingData();
-        setFFFollowingData(ffFollowingData);
+      if (selectedOptionsKeys.includes("questionableQuesting")) {
+        fetchPromises.push(
+          getQuestionableQuestingData().then((qqData) => setQQData(qqData))
+        );
       }
 
-      if ("favorites" in selectedOptions.fanfiction.subOptions) {
-        const fFavoritesData = await getFFFavoritesData();
-        setFFFavoritesData(fFavoritesData);
+      if (selectedOptionsKeys.includes("archiveOfOurOwn")) {
+        fetchPromises.push(
+          getArchiveOfOurOwnData(sitesDataState.archiveOfOurOwn.username).then(
+            (ao3Data) => setAO3Data(ao3Data)
+          )
+        );
       }
-    }
 
-    const selectedFormats = Object.entries(fileFormatState)
-      .filter(([key, isSelected]) => key in fileFormatState && isSelected)
-      .map(([format]) => format);
+      if (selectedOptionsKeys.includes("fanfiction")) {
+        if (selectedOptions.fanfiction.subOptions.includes("following")) {
+          fetchPromises.push(
+            getFFFollowingData().then((ffFollowingData) =>
+              setFFFollowingData(ffFollowingData)
+            )
+          );
+        }
+        if (selectedOptions.fanfiction.subOptions.includes("favorites")) {
+          fetchPromises.push(
+            getFFFavoritesData().then((fFavoritesData) =>
+              setFFFavoritesData(fFavoritesData)
+            )
+          );
+        }
+      }
 
-    for (const site in selectedOptions) {
-      for (const format of selectedFormats) {
-        switch (site) {
-          case "archiveOfOurOwn": {
-            handleExport(AO3Data.works, "ao3_works", format);
-            handleExport(AO3Data.authors, "ao3_authors", format);
-            handleExport(AO3Data.series, "ao3_series", format);
-            break;
-          }
-          case "fanfiction": {
-            if (selectedOptions.fanfiction.subOptions.includes("following")) {
-              handleExport(FFFollowingData, "ff_following", format);
+      await Promise.all(fetchPromises);
+
+      const selectedFormats = Object.entries(fileFormatState)
+        .filter(([key, isSelected]) => key in fileFormatState && isSelected)
+        .map(([format]) => format);
+
+      for (const site in selectedOptions) {
+        for (const format of selectedFormats) {
+          switch (site) {
+            case "archiveOfOurOwn": {
+              handleExport(AO3Data.works, "ao3_works", format);
+              handleExport(AO3Data.authors, "ao3_authors", format);
+              handleExport(AO3Data.series, "ao3_series", format);
+              break;
             }
-            if (selectedOptions.fanfiction.subOptions.includes("favorites")) {
-              handleExport(FFFavoritesData, "ff_favorites", format);
+            case "fanfiction": {
+              if (selectedOptions.fanfiction.subOptions.includes("following")) {
+                handleExport(FFFollowingData, "ff_following", format);
+              }
+              if (selectedOptions.fanfiction.subOptions.includes("favorites")) {
+                handleExport(FFFavoritesData, "ff_favorites", format);
+              }
+              break;
             }
-            break;
-          }
-          case "questionableQuesting": {
-            handleExport(QQData, "qq", format);
-            break;
+            case "questionableQuesting": {
+              handleExport(QQData, "qq", format);
+              break;
+            }
           }
         }
       }
+    } catch (error) {
+      console.error("Error during download process:", error);
     }
   };
 
@@ -262,7 +277,7 @@ export default function TalesTrove() {
             <span className="text-lg font-semibold">Download Files</span>
             <ChevronDown
               className={cn(
-                "h-5 w-5 transition-transform duration-200",
+                "h-4 w-4 transition-transform duration-200",
                 isDownloadOpen ? "transform rotate-180" : ""
               )}
             />
