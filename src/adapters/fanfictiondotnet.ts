@@ -1,3 +1,5 @@
+import { parseHTML } from "linkedom";
+
 import type { FFData, FFProcessedStoryData } from "~types";
 
 const FFFavoritesMobileURL = "https://m.fanfiction.net/m/f_story.php";
@@ -38,9 +40,7 @@ async function getFanFictionNetStoryData(
       credentials: "include"
     });
     const htmlText = await response.text();
-
-    const parser = new DOMParser();
-    const document = parser.parseFromString(htmlText, "text/html");
+    const { document } = parseHTML(htmlText);
 
     const tableRows = Array.from(
       document.querySelectorAll("table tbody")[0].children,
