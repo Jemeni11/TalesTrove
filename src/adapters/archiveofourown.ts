@@ -1,3 +1,5 @@
+import { parseHTML } from "linkedom";
+
 import type { authorType, SubscriptionResult, workObjectType } from "../types";
 
 function cleanWorkArray(array: workObjectType[]): workObjectType[] {
@@ -62,9 +64,7 @@ async function getArchiveOfOurOwnData(
       });
 
       const htmlText = await response.text();
-
-      const parser = new DOMParser();
-      const document = parser.parseFromString(htmlText, "text/html");
+      const { document } = parseHTML(htmlText);
 
       const main: HTMLDivElement = document.querySelector("div#main")!;
       const dataLinkTable: HTMLDListElement = main.querySelector(
