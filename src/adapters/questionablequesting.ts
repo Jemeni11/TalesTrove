@@ -1,3 +1,5 @@
+import { parseHTML } from "linkedom";
+
 import type { QQDataType } from "~types";
 
 function cleanArray(array: QQDataType[]) {
@@ -21,12 +23,12 @@ function cleanArray(array: QQDataType[]) {
 
 async function getQuestionableQuestingData() {
   let QQThreadsURL =
-    "https://forum.questionablequesting.com/watched/threads/all";
+    "https://forum.questionablequesting.com/watched/threads?unread=0";
 
   const QQData: QQDataType[] = [];
 
   const createQQThreadsURL = (pageNumber: number) =>
-    `https://forum.questionablequesting.com/watched/threads/all?page=${pageNumber}`;
+    `https://forum.questionablequesting.com/watched/threads?unread=0&page=${pageNumber}`;
 
   let numberOfPages = 1;
   let i = 1;
@@ -49,48 +51,81 @@ async function getQuestionableQuestingData() {
         }
       });
       const htmlText = await response.text();
+      const { document } = parseHTML(htmlText);
 
-      const parser = new DOMParser();
-      const document = parser.parseFromString(htmlText, "text/html");
+      const threadsList = document.querySelector(
+        "form[action='/watched/threads/update'] div.structItemContainer"
+      )! as unknown as HTMLDivElement;
 
-      const threadsList: HTMLOListElement = document.querySelector(
-        "form[action='watched/threads/update'] > ol.discussionListItems"
-      )!;
-
-      const liContentArray: HTMLDivElement[] = Array.from(
+      const liContentArray = Array.from(
         threadsList.children,
         (list) => list.children[1]
       ) as unknown as HTMLDivElement[];
 
       const urls = liContentArray.map((liContent) => {
         const mainBlock = liContent.querySelector(
-          "h3.title > a"
-        ) as HTMLAnchorElement;
+          "div.structItem-title"
+        ) as HTMLDivElement;
+
+        const storyName = Array.from(mainBlock.children)
+          .map((child) => child.textContent || "")
+          .join(" ")
+          .trim();
+
+        let storyLink = mainBlock.lastElementChild.getAttribute("href") || "";
+
+        if (storyLink.endsWith("/unread")) {
+          storyLink = storyLink.replace("/unread", "");
+        }
+
+        if (storyLink.startsWith("/threads")) {
+          storyLink = "https://forum.questionablequesting.com" + storyLink;
+        }
+
         const secondRow = liContent.querySelector(
-          "a.username"
-        ) as HTMLAnchorElement;
+          "ul.structItem-parts > li:first-of-type > a, ul.structItem-parts > li:first-of-type > span"
+        );
+
+        let authorLink = "";
+        let authorName = "";
+
+        if (secondRow) {
+          if (secondRow.tagName === "A") {
+            const anchor = secondRow as HTMLAnchorElement;
+
+            authorLink = anchor.getAttribute("href") || "";
+
+            if (authorLink.startsWith("/members")) {
+              authorLink =
+                "https://forum.questionablequesting.com" + authorLink;
+            }
+
+            authorName = anchor.textContent || "";
+          } else if (secondRow.tagName === "SPAN") {
+            const span = secondRow as HTMLSpanElement;
+            authorName = span.textContent || "";
+            authorLink = "";
+          }
+        }
 
         return {
-          storyLink: mainBlock["href"],
-          storyName: mainBlock.textContent,
-          authorLink: secondRow["href"],
-          authorName: secondRow.textContent
+          storyLink,
+          storyName,
+          authorLink,
+          authorName
         };
       });
 
       QQData.push(...urls);
 
-      const pageNavLinkGroup: HTMLDivElement | null = document.querySelector(
-        "div.pageNavLinkGroup"
-      );
+      const pageNavWrapper = document.querySelector(
+        "nav.pageNavWrapper"
+      ) as HTMLElement | null;
 
-      if (pageNavLinkGroup) {
-        const pageNumber = +pageNavLinkGroup
-          .querySelector(".PageNav > .pageNavHeader")
-          .textContent.split(" of ")
-          .pop();
-
-        numberOfPages = pageNumber;
+      if (pageNavWrapper) {
+        numberOfPages =
+          +pageNavWrapper.querySelector("ul.pageNav-main").lastElementChild
+            .textContent;
 
         if (i < numberOfPages) {
           await delay(2000);
