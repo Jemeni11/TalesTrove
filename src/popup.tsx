@@ -42,6 +42,8 @@ import { handleExport } from "~utils";
 
 import "./style.css";
 
+import { sendToBackground } from "@plasmohq/messaging";
+
 export default function TalesTrove() {
   const [expandedSections, setExpandedSections] = useState<{
     fanfiction: boolean;
@@ -86,6 +88,7 @@ export default function TalesTrove() {
   >;
 
   const handleDownload = async () => {
+    console.error("tesTESTSTSTSTT");
     try {
       const selectedOptions_: SelectedOptions | {} = {};
 
@@ -110,70 +113,83 @@ export default function TalesTrove() {
         }
       }
 
-      const selectedOptions = selectedOptions_ as SelectedOptions;
-      const selectedOptionsKeys = Object.keys(selectedOptions);
-
-      const fetchPromises = [];
-
-      if (selectedOptionsKeys.includes("questionableQuesting")) {
-        fetchPromises.push(
-          getQuestionableQuestingData().then((qqData) => setQQData(qqData))
-        );
-      }
-
-      if (selectedOptionsKeys.includes("archiveOfOurOwn")) {
-        fetchPromises.push(
-          getArchiveOfOurOwnData(sitesDataState.archiveOfOurOwn.username).then(
-            (ao3Data) => setAO3Data(ao3Data)
-          )
-        );
-      }
-
-      if (selectedOptionsKeys.includes("fanfiction")) {
-        if (selectedOptions.fanfiction.subOptions.includes("following")) {
-          fetchPromises.push(
-            getFFFollowingData().then((ffFollowingData) =>
-              setFFFollowingData(ffFollowingData)
-            )
-          );
-        }
-        if (selectedOptions.fanfiction.subOptions.includes("favorites")) {
-          fetchPromises.push(
-            getFFFavoritesData().then((fFavoritesData) =>
-              setFFFavoritesData(fFavoritesData)
-            )
-          );
-        }
-      }
-
-      await Promise.all(fetchPromises);
-
       const selectedFormats = Object.entries(fileFormatState)
         .filter(([key, isSelected]) => key in fileFormatState && isSelected)
         .map(([format]) => format);
 
-      for (const site in selectedOptions) {
+      const selectedOptions = selectedOptions_ as SelectedOptions;
+      const selectedOptionsKeys = Object.keys(selectedOptions);
+
+      if (selectedOptionsKeys.includes("questionableQuesting")) {
+        const qqResponse = await sendToBackground({
+          name: "adapter",
+          body: {
+            id: "qq"
+          }
+        });
+
+        const qqData = qqResponse.message as QQDataType[];
+
+        setQQData(qqData);
+
         for (const format of selectedFormats) {
-          switch (site) {
-            case "archiveOfOurOwn": {
-              handleExport(AO3Data.works, "ao3_works", format);
-              handleExport(AO3Data.authors, "ao3_authors", format);
-              handleExport(AO3Data.series, "ao3_series", format);
-              break;
+          handleExport(qqData, "qq", format);
+        }
+      }
+
+      if (selectedOptionsKeys.includes("archiveOfOurOwn")) {
+        const ao3Response = await sendToBackground({
+          name: "adapter",
+          body: {
+            id: "ao3",
+            username: sitesDataState.archiveOfOurOwn.username
+          }
+        });
+
+        const ao3Data = ao3Response.message as SubscriptionResult;
+
+        setAO3Data(ao3Data);
+
+        for (const format of selectedFormats) {
+          handleExport(ao3Data.works, "ao3_works", format);
+          handleExport(ao3Data.authors, "ao3_authors", format);
+          handleExport(ao3Data.series, "ao3_series", format);
+        }
+      }
+
+      if (selectedOptionsKeys.includes("fanfiction")) {
+        if (selectedOptions.fanfiction.subOptions.includes("following")) {
+          const fffollowingResponse = await sendToBackground({
+            name: "adapter",
+            body: {
+              id: "fffollowing"
             }
-            case "fanfiction": {
-              if (selectedOptions.fanfiction.subOptions.includes("following")) {
-                handleExport(FFFollowingData, "ff_following", format);
-              }
-              if (selectedOptions.fanfiction.subOptions.includes("favorites")) {
-                handleExport(FFFavoritesData, "ff_favorites", format);
-              }
-              break;
+          });
+
+          const fffollowingData =
+            fffollowingResponse.message as FFProcessedStoryData[];
+
+          setFFFollowingData(fffollowingData);
+
+          for (const format of selectedFormats) {
+            handleExport(fffollowingData, "ff_following", format);
+          }
+        }
+        if (selectedOptions.fanfiction.subOptions.includes("favorites")) {
+          const fffavoritesResponse = await sendToBackground({
+            name: "adapter",
+            body: {
+              id: "fffavorites"
             }
-            case "questionableQuesting": {
-              handleExport(QQData, "qq", format);
-              break;
-            }
+          });
+
+          const fffavoritesData =
+            fffavoritesResponse.message as FFProcessedStoryData[];
+
+          setFFFavoritesData(fffavoritesData);
+
+          for (const format of selectedFormats) {
+            handleExport(fffavoritesData, "ff_favorites", format);
           }
         }
       }
