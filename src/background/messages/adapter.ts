@@ -17,7 +17,10 @@ const handler: PlasmoMessaging.MessageHandler = async (req, res) => {
         message = await getQuestionableQuestingData();
         break;
       case "ao3":
-        message = await getArchiveOfOurOwnData(req.body?.username);
+        const types_array = Object.entries(req.body.type)
+          .filter(([_, value]) => value)
+          .map(([key]) => key) as unknown as ("authors" | "works" | "series")[];
+        message = await getArchiveOfOurOwnData(req.body?.username, types_array);
         break;
       case "fffollowing":
         message = await getFFFollowingData();
