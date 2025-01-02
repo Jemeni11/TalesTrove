@@ -88,7 +88,6 @@ export default function TalesTrove() {
   >;
 
   const handleDownload = async () => {
-    console.error("tesTESTSTSTSTT");
     try {
       const selectedOptions_: SelectedOptions | {} = {};
 
@@ -142,7 +141,12 @@ export default function TalesTrove() {
           name: "adapter",
           body: {
             id: "ao3",
-            username: sitesDataState.archiveOfOurOwn.username
+            username: sitesDataState.archiveOfOurOwn.username,
+            type: {
+              author: sitesDataState.archiveOfOurOwn.author,
+              work: sitesDataState.archiveOfOurOwn.work,
+              series: sitesDataState.archiveOfOurOwn.series
+            }
           }
         });
 
