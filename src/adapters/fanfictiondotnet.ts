@@ -37,7 +37,10 @@ async function getFanFictionNetStoryData(
   try {
     const response = await fetch(url, {
       mode: "cors",
-      credentials: "include"
+      credentials: "include",
+      headers: {
+        "User-Agent": navigator.userAgent
+      }
     });
     const htmlText = await response.text();
     const { document } = parseHTML(htmlText);
@@ -63,7 +66,7 @@ async function getFanFictionNetStoryData(
       return rowCells.map((cell) => {
         if (cell.tagName === "A") {
           const anchor = cell as HTMLAnchorElement;
-          return [anchor.pathname, anchor.textContent];
+          return [anchor.href, anchor.textContent];
         }
         return cell.textContent;
       });
