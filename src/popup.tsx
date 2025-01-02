@@ -155,9 +155,15 @@ export default function TalesTrove() {
         setAO3Data(ao3Data);
 
         for (const format of selectedFormats) {
-          handleExport(ao3Data.works, "ao3_works", format);
-          handleExport(ao3Data.authors, "ao3_authors", format);
-          handleExport(ao3Data.series, "ao3_series", format);
+          if (ao3Data.works) {
+            handleExport(ao3Data.works, "ao3_works", format);
+          }
+          if (ao3Data.authors) {
+            handleExport(ao3Data.authors, "ao3_authors", format);
+          }
+          if (ao3Data.series) {
+            handleExport(ao3Data.series, "ao3_series", format);
+          }
         }
       }
 
