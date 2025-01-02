@@ -30,7 +30,7 @@ function cleanAuthorArray(array: authorType[]): authorType[] {
 
 async function getArchiveOfOurOwnData(
   username: string,
-  types?: ("authors" | "works" | "series")[]
+  types?: ("author" | "work" | "series")[]
 ): Promise<SubscriptionResult> {
   const baseURL = `https://archiveofourown.org/users/${username}/subscriptions`;
   const typeQueryParam = types?.length === 1 ? `type=${types[0]}` : "";
@@ -192,8 +192,8 @@ async function getArchiveOfOurOwnData(
 
   // Remove unwanted keys based on `types`
   if (types && types.length < 3) {
-    if (!types.includes("authors")) delete result.authors;
-    if (!types.includes("works")) delete result.works;
+    if (!types.includes("author")) delete result.authors;
+    if (!types.includes("work")) delete result.works;
     if (!types.includes("series")) delete result.series;
   }
 
