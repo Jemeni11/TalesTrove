@@ -5,10 +5,9 @@ import type {
   workObjectType
 } from "~types";
 
-export default function saveJSONFile(
-  data: workObjectType[] | authorType[] | FFProcessedStoryData[] | QQDataType[],
-  fileName: string
-) {
+type JSONType = workObjectType | QQDataType | FFProcessedStoryData | authorType;
+
+export default function saveJSONFile(data: JSONType[], fileName: string) {
   if (data.length === 0) {
     console.warn("No data to download.");
     return;
