@@ -19,7 +19,7 @@ const handler: PlasmoMessaging.MessageHandler = async (req, res) => {
       case "ao3":
         const types_array = Object.entries(req.body.type)
           .filter(([_, value]) => value)
-          .map(([key]) => key) as unknown as ("authors" | "works" | "series")[];
+          .map(([key]) => key) as unknown as ("author" | "work" | "series")[];
         message = await getArchiveOfOurOwnData(req.body?.username, types_array);
         break;
       case "fffollowing":
