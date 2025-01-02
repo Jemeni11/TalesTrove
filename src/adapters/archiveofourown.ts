@@ -30,14 +30,30 @@ function cleanAuthorArray(array: authorType[]): authorType[] {
 
 async function getArchiveOfOurOwnData(
   username: string,
-  type?: "authors" | "works" | "series"
+  types?: ("authors" | "works" | "series")[]
 ): Promise<SubscriptionResult> {
   const baseURL = `https://archiveofourown.org/users/${username}/subscriptions`;
-  const typeQueryParam = type ? `?type=${type}` : "";
-  let ao3SubscriptionURL = `${baseURL}${typeQueryParam}`;
+  const typeQueryParam = types?.length === 1 ? `type=${types[0]}` : "";
 
-  const createAO3SubscriptionURL = (pageNumber: string) =>
-    `${baseURL}${typeQueryParam}&page=${pageNumber}`;
+  const createAO3SubscriptionURL = (pageNumber?: number) => {
+    const pageQueryParam = pageNumber ? `page=${pageNumber}` : "";
+    const queryParams = [pageQueryParam, typeQueryParam]
+      .filter(Boolean)
+      .join("&");
+    return queryParams ? `${baseURL}?${queryParams}` : baseURL;
+  };
+
+  let ao3SubscriptionURL = createAO3SubscriptionURL();
+
+  /**
+   * 
+    Examples 
+    https://archiveofourown.org/users/stoleThunderNotLightning/subscriptions
+    https://archiveofourown.org/users/stoleThunderNotLightning/subscriptions?page=2&type=works
+    https://archiveofourown.org/users/stoleThunderNotLightning/subscriptions?page=6
+    https://archiveofourown.org/users/stoleThunderNotLightning/subscriptions?page=5&type=users/
+    https://archiveofourown.org/users/stoleThunderNotLightning/subscriptions?type=series
+   */
 
   const authors: authorType[] = [];
   const works: workObjectType[] = [];
@@ -52,7 +68,7 @@ async function getArchiveOfOurOwnData(
   do {
     try {
       if (i > 1) {
-        ao3SubscriptionURL = createAO3SubscriptionURL(i.toString());
+        ao3SubscriptionURL = createAO3SubscriptionURL(i);
       }
 
       const response = await fetch(ao3SubscriptionURL, {
@@ -84,15 +100,18 @@ async function getArchiveOfOurOwnData(
 
         if (linkArrayLength === 1) {
           const link = linkArray[0];
-          const linkTextContent = link
-            .textContent!.replace(/\n\s+/g, " ")
-            .trim();
+          const linkTextContent = link.textContent!.trim();
 
-          if (linkTextContent.includes("Anonymous")) {
-            const isSeries = link.pathname.includes("/series/");
+          if (link.href.includes("/users/")) {
+            authors.push({
+              name: linkTextContent,
+              link: "https://archiveofourown.org" + link.href
+            });
+          } else {
+            const isSeries = link.href.includes("/series/");
 
-            const workLink = "https://archiveofourown.org" + link.pathname;
-            const workTitle = link.textContent!.trim();
+            const workLink = "https://archiveofourown.org" + link.href;
+            const workTitle = linkTextContent;
 
             const workObject = {
               id: workLink,
@@ -107,30 +126,23 @@ async function getArchiveOfOurOwnData(
             } else {
               works.push(workObject);
             }
-          } else {
-            authors.push({
-              name: link.textContent!.trim(),
-              link: "https://archiveofourown.org" + link.pathname
-            });
           }
         } else if (linkArrayLength >= 2) {
           const workAnchorTag = linkArray[0];
           const authorsAnchorTag = linkArray.slice(1);
 
           const workTitle = workAnchorTag.textContent!.trim();
-
-          const isSeries = workAnchorTag.pathname.includes("/series/");
+          const isSeries = workAnchorTag.href.includes("/series/");
 
           const authorNames = authorsAnchorTag.map((author) =>
             author.textContent!.trim()
           );
 
           const authorLinks = authorsAnchorTag.map(
-            (author) => "https://archiveofourown.org" + author.pathname
+            (author) => "https://archiveofourown.org" + author.href
           );
 
-          const workLink =
-            "https://archiveofourown.org" + workAnchorTag.pathname;
+          const workLink = "https://archiveofourown.org" + workAnchorTag.href;
 
           const workObject = {
             id: workLink,
@@ -171,21 +183,21 @@ async function getArchiveOfOurOwnData(
     }
   } while (i <= numberOfPages);
 
-  // Return only the requested type, or all types if no type specified
-  return {
-    authors: type === "authors" ? cleanAuthorArray(authors) : undefined,
-    works: type === "works" ? cleanWorkArray(works) : undefined,
-    series: type === "series" ? cleanWorkArray(series) : undefined
+  // Prepopulate the result with all data
+  const result: SubscriptionResult = {
+    authors: cleanAuthorArray(authors),
+    works: cleanWorkArray(works),
+    series: cleanWorkArray(series)
   };
-  // if (type === "authors") return { authors  };
-  // if (type === "works") return { works };
-  // if (type === "series") return { series };
 
-  // return {
-  //   authors: cleanArray(authors),
-  //   works: cleanArray(works),
-  //   series: cleanArray(series)
-  // };
+  // Remove unwanted keys based on `types`
+  if (types && types.length < 3) {
+    if (!types.includes("authors")) delete result.authors;
+    if (!types.includes("works")) delete result.works;
+    if (!types.includes("series")) delete result.series;
+  }
+
+  return result;
 }
 
 export default getArchiveOfOurOwnData;
