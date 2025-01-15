@@ -100,6 +100,14 @@ async function getArchiveOfOurOwnData(
           }
         );
 
+        if (links.length == 0) {
+          customError(
+            undefined,
+            "There's no data for this site",
+            `${adapterName}Error`
+          );
+        }
+
         for (let linkArray of links) {
           const linkArrayLength = linkArray.length;
 
