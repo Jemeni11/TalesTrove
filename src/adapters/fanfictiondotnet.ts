@@ -55,6 +55,14 @@ async function getFanFictionNetStoryData(
     tableRows.pop(); // Removes the "Remove Selected" button
     tableRows.shift(); // Removes the header row
 
+    if (tableRows.length == 0) {
+      customError(
+        undefined,
+        "There's no data for this site",
+        `${adapterName}Error`
+      );
+    }
+
     const tableRowsHTMLCollection = tableRows.map((row) => row[0].children);
 
     const storyDataList = tableRowsHTMLCollection.map((row) => {
