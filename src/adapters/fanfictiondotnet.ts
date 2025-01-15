@@ -1,6 +1,7 @@
 import { parseHTML } from "linkedom";
 
 import type { FFData, FFProcessedStoryData } from "~types";
+import { customError } from "~utils";
 
 const FFFavoritesMobileURL = "https://m.fanfiction.net/m/f_story.php";
 
@@ -34,6 +35,8 @@ function processStoryData(data: FFData): FFProcessedStoryData {
 async function getFanFictionNetStoryData(
   url: string
 ): Promise<FFProcessedStoryData[]> {
+  const adapterName = "FanFictionNetAdapter";
+
   try {
     const response = await fetch(url, {
       mode: "cors",
@@ -90,8 +93,12 @@ async function getFanFictionNetStoryData(
 
     return processedStoryDataList;
   } catch (error) {
-    console.error("Error fetching or processing data:", error);
-    return [];
+    console.error(`Error in ${adapterName}:`, error);
+    customError(
+      error instanceof Error ? error : undefined,
+      "An error occurred while fetching data",
+      `${adapterName}Error`
+    );
   }
 }
 
