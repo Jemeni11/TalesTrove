@@ -46,6 +46,10 @@ async function getQuestionableQuestingData() {
           "form[action='/watched/threads/update'] div.structItemContainer"
         )! as unknown as HTMLDivElement;
 
+        if (!threadsList) {
+          customError(adapterName, "There's no data for this site");
+        }
+
         const liContentArray = Array.from(
           threadsList.children,
           (list) => list.children[1]
