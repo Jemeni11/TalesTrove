@@ -4,13 +4,9 @@ import type {
   fileFormatType,
   fileFormatTypeKey,
   sitesDataType,
-  sitesDataTypeKey
+  sitesDataTypeKey, 
+  subDataParams
 } from "~types";
-
-type subDataParams =
-  | keyof sitesDataType["fanfiction"]
-  | Exclude<keyof sitesDataType["archiveOfOurOwn"], "username">
-  | keyof sitesDataType["questionableQuesting"];
 
 export const sitesData: sitesDataType = {
   fanfiction: {
