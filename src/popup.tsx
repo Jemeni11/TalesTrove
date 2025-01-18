@@ -46,47 +46,60 @@ const useDownloadManager = (
       .filter(([_, isSelected]) => isSelected)
       .map(([format]) => format);
 
-  const handleQQDownload = async (selectedFormats: string[]) => {
-    const response = await sendToBackground({
-      name: "adapter",
-      body: { id: "QuestionableQuestingAdapter" }
-    });
-
+  const handleAdapterDownload = async ({
+    adapterId,
+    body = {},
+    exportHandler
+  }: {
+    adapterId: string;
+    body?: Record<string, any>;
+    exportHandler: (data: any, formats: string[]) => void;
+  }) => {
     try {
-      const qqData = response.message as QQDataType[];
-      selectedFormats.forEach((format) => handleExport(qqData, "qq", format));
-    } catch {
-      setAllErrors((prev) => [...prev, response.error]);
+      const response = await sendToBackground({
+        name: "adapter",
+        body: { id: adapterId, ...body }
+      });
+
+      try {
+        await exportHandler(response.message, getSelectedFormats());
+      } catch {
+        setAllErrors((prev) => [...prev, response.error]);
+      }
+    } catch (error) {
+      setAllErrors((prev) => [...prev, error]);
     }
   };
 
-  const handleAO3Download = async (selectedFormats: string[]) => {
-    const response = await sendToBackground({
-      name: "adapter",
+  const handleQQDownload = () =>
+    handleAdapterDownload({
+      adapterId: "QuestionableQuestingAdapter",
+      exportHandler: (data: QQDataType[], formats: string[]) => {
+        formats.forEach((format) => handleExport(data, "qq", format));
+      }
+    });
+
+  const handleAO3Download = () =>
+    handleAdapterDownload({
+      adapterId: "ArchiveOfOurOwnAdapter",
       body: {
-        id: "ArchiveOfOurOwnAdapter",
         username: sitesDataState.archiveOfOurOwn.username,
         type: {
           author: sitesDataState.archiveOfOurOwn.author,
           work: sitesDataState.archiveOfOurOwn.work,
           series: sitesDataState.archiveOfOurOwn.series
         }
+      },
+      exportHandler: (data: SubscriptionResult, formats: string[]) => {
+        formats.forEach((format) => {
+          if (data.works) handleExport(data.works, "ao3_works", format);
+          if (data.authors) handleExport(data.authors, "ao3_authors", format);
+          if (data.series) handleExport(data.series, "ao3_series", format);
+        });
       }
     });
-    try {
-      const ao3Data = response.message as SubscriptionResult;
-      selectedFormats.forEach((format) => {
-        if (ao3Data.works) handleExport(ao3Data.works, "ao3_works", format);
-        if (ao3Data.authors)
-          handleExport(ao3Data.authors, "ao3_authors", format);
-        if (ao3Data.series) handleExport(ao3Data.series, "ao3_series", format);
-      });
-    } catch {
-      setAllErrors((prev) => [...prev, response.error]);
-    }
-  };
 
-  const handleFFDownload = async (selectedFormats: string[]) => {
+  const handleFFDownload = () => {
     const downloads = [
       {
         enabled: sitesDataState.fanfiction.following,
@@ -100,27 +113,23 @@ const useDownloadManager = (
       }
     ];
 
-    try {
-      for (const { enabled, adapterId, exportPrefix } of downloads) {
-        if (!enabled) continue;
-
-        const response = await sendToBackground({
-          name: "adapter",
-          body: { id: adapterId }
-        });
-
-        try {
-          const data = response.message as FFProcessedStoryData[];
-          selectedFormats.forEach((format) =>
-            handleExport(data, exportPrefix, format)
-          );
-        } catch {
-          setAllErrors((prev) => [...prev, response.error]);
-        }
-      }
-    } catch (error) {
-      setAllErrors((prev) => [...prev, error]);
-    }
+    return Promise.all(
+      downloads
+        .filter(({ enabled }) => enabled)
+        .map(({ adapterId, exportPrefix }) =>
+          handleAdapterDownload({
+            adapterId,
+            exportHandler: (
+              data: FFProcessedStoryData[],
+              formats: string[]
+            ) => {
+              formats.forEach((format) =>
+                handleExport(data, exportPrefix, format)
+              );
+            }
+          })
+        )
+    );
   };
 
   const handleDownload = async () => {
@@ -128,25 +137,24 @@ const useDownloadManager = (
     setError(null);
 
     try {
-      const selectedFormats = getSelectedFormats();
-      const downloads = [];
+      const downloadTasks = [];
 
       if (sitesDataState.questionableQuesting.following) {
-        downloads.push(handleQQDownload(selectedFormats));
+        downloadTasks.push(handleQQDownload());
       }
 
       if (Object.values(sitesDataState.archiveOfOurOwn).some(Boolean)) {
-        downloads.push(handleAO3Download(selectedFormats));
+        downloadTasks.push(handleAO3Download());
       }
 
       if (
         sitesDataState.fanfiction.following ||
         sitesDataState.fanfiction.favorites
       ) {
-        downloads.push(handleFFDownload(selectedFormats));
+        downloadTasks.push(handleFFDownload());
       }
 
-      await Promise.all(downloads);
+      await Promise.all(downloadTasks);
     } catch (error) {
       setError(error instanceof Error ? error.message : "Download failed");
       console.error("Download error:", error);
