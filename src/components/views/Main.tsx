@@ -48,7 +48,7 @@ export default function Main({
   };
 
   return (
-    <div className="p-4 flex-grow">
+    <div className="flex-grow">
       <Section
         title="FanFiction.Net"
         expanded={expandedSections.fanfiction}
