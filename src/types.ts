@@ -73,3 +73,14 @@ export type fileFormatType = {
 };
 
 export type fileFormatTypeKey = keyof fileFormatType;
+
+export type subDataParams =
+  | keyof sitesDataType["fanfiction"]
+  | Exclude<keyof sitesDataType["archiveOfOurOwn"], "username">
+  | keyof sitesDataType["questionableQuesting"];
+
+export type expandedSectionsType = {
+  fanfiction: boolean;
+  archiveOfOurOwn: boolean;
+  questionableQuesting: boolean;
+};
