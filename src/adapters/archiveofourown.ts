@@ -91,6 +91,13 @@ async function getArchiveOfOurOwnData(
         const htmlText = await response.text();
         const { document } = parseHTML(htmlText);
 
+        if (
+          document.querySelector(".flash.error")?.textContent ==
+          "Sorry, you don't have permission to access the page you were trying to reach. Please log in."
+        ) {
+          customError(adapterName, "User isn't logged in");
+        }
+
         const main: HTMLDivElement = document.querySelector("div#main")!;
         const dataLinkTable: HTMLDListElement = main.querySelector(
           "dl.subscription.index.group"
