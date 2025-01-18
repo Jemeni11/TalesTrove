@@ -1,9 +1,12 @@
 export default function customError(
   error: Error | undefined,
+  name: string,
   message: string,
-  name: string
+  cause?: string
 ): never {
-  const newError = new Error(message, { cause: error?.cause || error });
+  const newError = new Error(message, {
+    cause: cause || error?.cause || error
+  });
   newError.name = name || error?.name || "CustomError";
   throw newError;
 }
