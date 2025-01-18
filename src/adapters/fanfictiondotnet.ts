@@ -45,8 +45,16 @@ async function getFanFictionNetStoryData(
         "User-Agent": navigator.userAgent
       }
     });
+
     const htmlText = await response.text();
     const { document } = parseHTML(htmlText);
+
+    const guiWarningText =
+      document.querySelector("span.gui_warning")?.textContent;
+
+    if (guiWarningText && guiWarningText === "FanFiction.Net Login Required") {
+      customError(adapterName, "User isn't logged in");
+    }
 
     const tableRows = Array.from(
       document.querySelectorAll("table tbody")[0].children,
@@ -56,11 +64,7 @@ async function getFanFictionNetStoryData(
     tableRows.shift(); // Removes the header row
 
     if (tableRows.length == 0) {
-      customError(
-        undefined,
-        "There's no data for this site",
-        `${adapterName}Error`
-      );
+      customError(adapterName, "There's no data for this site");
     }
 
     const tableRowsHTMLCollection = tableRows.map((row) => row[0].children);
@@ -101,12 +105,7 @@ async function getFanFictionNetStoryData(
 
     return processedStoryDataList;
   } catch (error) {
-    console.error(`Error in ${adapterName}:`, error);
-    customError(
-      error instanceof Error ? error : undefined,
-      "An error occurred while fetching data",
-      `${adapterName}Error`
-    );
+    customError(adapterName, "An error occurred while fetching data", error);
   }
 }
 
