@@ -84,6 +84,10 @@ async function getArchiveOfOurOwnData(
           }
         });
 
+        if (response.status == 302) {
+          customError(adapterName, "User isn't logged in");
+        }
+
         const htmlText = await response.text();
         const { document } = parseHTML(htmlText);
 
@@ -101,11 +105,7 @@ async function getArchiveOfOurOwnData(
         );
 
         if (links.length == 0) {
-          customError(
-            undefined,
-            "There's no data for this site",
-            `${adapterName}Error`
-          );
+          customError(adapterName, "There's no data for this site");
         }
 
         for (let linkArray of links) {
@@ -192,12 +192,7 @@ async function getArchiveOfOurOwnData(
           }
         }
       } catch (error) {
-        console.error(`Error on page ${i} in ${adapterName}:`, error);
-        customError(
-          error instanceof Error ? error : undefined,
-          `Failed to fetch data from page ${i}`,
-          `${adapterName}Error`
-        );
+        customError(adapterName, `Failed to fetch data from page ${i}`, error);
       } finally {
         i++;
       }
@@ -219,12 +214,7 @@ async function getArchiveOfOurOwnData(
 
     return result;
   } catch (error) {
-    console.error(`Error in ${adapterName}:`, error);
-    customError(
-      error instanceof Error ? error : undefined,
-      "An error occurred while fetching data",
-      `${adapterName}Error`
-    );
+    customError(adapterName, "An error occurred while fetching data", error);
   }
 }
 
