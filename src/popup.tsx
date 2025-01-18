@@ -303,6 +303,7 @@ export default function TalesTrove() {
             expanded={statusSection}
             onToggle={() => setStatusSection((prev) => !prev)}>
             <div className="text-sm max-h-[120px] overflow-y-auto">
+              {allErrors.length === 0 && <span>No errors :)</span>}
               {allErrors.map((err) => (
                 <p key={err.name} className="mb-1">
                   <strong>{err.name || "No Name"}</strong>
