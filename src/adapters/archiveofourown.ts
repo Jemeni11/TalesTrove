@@ -36,6 +36,10 @@ async function getArchiveOfOurOwnData(
 ): Promise<SubscriptionResult> {
   const adapterName = "ArchiveOfOurOwnAdapter";
 
+  if (username.trim() === "") {
+    customError(adapterName, "No Username");
+  }
+
   try {
     const baseURL = `https://archiveofourown.org/users/${username}/subscriptions`;
     const typeQueryParam = types?.length === 1 ? `type=${types[0]}` : "";
