@@ -1,7 +1,7 @@
 import { useAtomValue } from "jotai";
 import { useState } from "react";
 
-import { Button, Footer, Header, Main, SwitchItem } from "~components";
+import { Button, Footer, Header, Main, Section, SwitchItem } from "~components";
 import {
   BookmarksHTMLIcon,
   ChevronDown,
@@ -263,10 +263,18 @@ export default function TalesTrove() {
   const sitesDataState = useAtomValue(sitesDataAtom);
   const toggleSitesData = useToggleSitesData();
 
+  const [showStatusSection, setShowStatusSection] = useState(false);
+  const [statusSection, setStatusSection] = useState(false);
+
   const { handleDownload, isLoading, error, allErrors } = useDownloadManager(
     fileFormatState,
     sitesDataState
   );
+
+  const onDownloadClick = () => {
+    setShowStatusSection(true);
+    handleDownload();
+  };
 
   const toggleSection = (section: keyof expandedSectionsType) => {
     setExpandedSections((prev) => ({ ...prev, [section]: !prev[section] }));
@@ -282,12 +290,35 @@ export default function TalesTrove() {
   return (
     <div className="w-[350px] bg-background text-foreground overflow-y-auto shadow-lg flex flex-col">
       <Header />
-      <Main
-        expandedSections={expandedSections}
-        onToggle={toggleSection}
-        sitesDataState={sitesDataState}
-        toggleSitesData={toggleSitesData}
-      />
+      <main className="p-4">
+        <Main
+          expandedSections={expandedSections}
+          onToggle={toggleSection}
+          sitesDataState={sitesDataState}
+          toggleSitesData={toggleSitesData}
+        />
+        {showStatusSection && (
+          <Section
+            title="Status"
+            expanded={statusSection}
+            onToggle={() => setStatusSection((prev) => !prev)}>
+            <div className="text-sm max-h-[120px] overflow-y-auto">
+              {allErrors.map((err) => (
+                <p key={err.name} className="mb-1">
+                  <strong>{err.name || "No Name"}</strong>
+                  <br />
+                  <span>{err.message || "No Message"}</span>
+                  <br />
+                  {err.cause && err.cause !== err.message && (
+                    <span>{`${err.cause}` || "No Cause"}</span>
+                  )}
+                </p>
+              ))}
+            </div>
+          </Section>
+        )}
+        {error && <div className="text-red-500 text-sm mt-2">{error}</div>}
+      </main>
 
       <div className="mt-auto p-4 bg-muted">
         <DownloadOptions
@@ -297,28 +328,13 @@ export default function TalesTrove() {
           selectedFormatsCount={selectedFormatsCount}
           fileFormatState={fileFormatState}
         />
-
-        <div className="text-lg">
-          {allErrors.map((err) => (
-            <p key={err.name}>
-              <span>{err?.name || "No Name"}</span>
-              <br />
-              <span>{err?.message || "No Message"}</span>
-              <br />
-              <span>{`${err?.cause}` || "No Cause"}</span>
-            </p>
-          ))}
-        </div>
-        {error && <div className="text-red-500 text-sm mt-2">{error}</div>}
-
         <Button
-          onClick={handleDownload}
+          onClick={onDownloadClick}
           className="w-full rounded mt-4 bg-[#344955] text-white hover:bg-[hsl(203,11%,14%)]"
           disabled={selectedFormatsCount === 0 || isLoading}>
           <Download className="w-4 h-4 mr-2" />
           {isLoading ? "Downloading..." : "Download Files"}
         </Button>
-
         <Footer />
       </div>
     </div>
