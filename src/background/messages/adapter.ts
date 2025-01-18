@@ -6,43 +6,54 @@ import {
   getFFFollowingData,
   getQuestionableQuestingData
 } from "~adapters";
+import type {
+  FFProcessedStoryData,
+  QQDataType,
+  SubscriptionResult
+} from "~types";
 
 const handler: PlasmoMessaging.MessageHandler = async (req, res) => {
-  try {
-    const site_id = req.body.id;
-    let message;
+  const site_id: string = req.body.id;
 
-    switch (site_id) {
-      case "qq":
-        message = await getQuestionableQuestingData();
-        break;
-      case "ao3":
-        const types_array = Object.entries(req.body.type)
-          .filter(([_, value]) => value)
-          .map(([key]) => key) as unknown as ("author" | "work" | "series")[];
-        message = await getArchiveOfOurOwnData(req.body?.username, types_array);
-        break;
-      case "fffollowing":
-        message = await getFFFollowingData();
-        break;
-      case "fffavorites":
-        message = await getFFFavoritesData();
-        break;
+  try {
+    let message: QQDataType[] | FFProcessedStoryData[] | SubscriptionResult;
+
+    if (site_id === "ArchiveOfOurOwnAdapter") {
+      const types_array = Object.entries(req.body.type)
+        .filter(([_, value]) => value)
+        .map(([key]) => key) as ("author" | "work" | "series")[];
+      message = await getArchiveOfOurOwnData(req.body?.username, types_array);
+    } else {
+      switch (site_id) {
+        case "QuestionableQuestingAdapter":
+          message = await getQuestionableQuestingData();
+          break;
+        case "FanFictionNetFollowingAdapter":
+          message = await getFFFollowingData();
+          break;
+        case "FanFictionNetFavoritesAdapter":
+          message = await getFFFavoritesData();
+          break;
+        default:
+          message = [];
+      }
     }
 
-    console.log(`[DEBUG]: Inside the BSW ->`, message);
-    console.log(
-      `[DEBUG]: Inside the BSW (STRINGIFY) ->`,
-      JSON.stringify(message)
-    );
+    res.send({ message });
+  } catch (error) {
+    const index = site_id.indexOf("Adapter");
+    const result = index !== -1 ? site_id.slice(0, index) : site_id;
+
+    error.name = result;
+    console.error(error);
 
     res.send({
-      message
-    });
-  } catch (error) {
-    console.error(`[ERROR]: Failed to fetch data ->`, error);
-    res.send({
-      error: "Failed to fetch data"
+      error: {
+        name: error.name,
+        message: error.message,
+        cause: error.cause,
+        stack: error.stack
+      }
     });
   }
 };
