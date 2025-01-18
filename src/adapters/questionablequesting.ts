@@ -31,10 +31,14 @@ async function getQuestionableQuestingData() {
           mode: "cors",
           credentials: "include",
           headers: {
-            "User-Agent":
-              "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36 OPR/109.0.0.0"
+            "User-Agent": navigator.userAgent
           }
         });
+
+        if (response.status == 403 || response.status == 401) {
+          customError(adapterName, "User isn't logged in");
+        }
+
         const htmlText = await response.text();
         const { document } = parseHTML(htmlText);
 
@@ -117,12 +121,7 @@ async function getQuestionableQuestingData() {
           }
         }
       } catch (error) {
-        console.error(`Error on page ${i} in ${adapterName}:`, error);
-        customError(
-          error instanceof Error ? error : undefined,
-          `Failed to fetch data from page ${i}`,
-          `${adapterName}Error`
-        );
+        customError(adapterName, `Failed to fetch data from page ${i}`, error);
       } finally {
         i++;
       }
@@ -130,12 +129,7 @@ async function getQuestionableQuestingData() {
 
     return QQData;
   } catch (error) {
-    console.error(`Error in ${adapterName}:`, error);
-    customError(
-      error instanceof Error ? error : undefined,
-      "An error occurred while fetching data",
-      `${adapterName}Error`
-    );
+    customError(adapterName, "An error occurred while fetching data", error);
   }
 }
 
