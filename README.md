@@ -1,3 +1,5 @@
+<a id="readme-top"></a>
+
 <div align="center">
   <a href="https://github.com/Jemeni11/Tales-Trove">
     <img src="assets/icon.png" alt="Logo" width="80" height="80">
