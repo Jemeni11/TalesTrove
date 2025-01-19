@@ -86,12 +86,12 @@ The extension will be available on official browser stores soon. Check back for 
 
 > [!NOTE]
 >
-> You must enable Developer Mode in your browser.
+> You must enable Developer Mode in Chrome/Chromium.
 
 1. Go to the [Releases Page](https://github.com/Jemeni11/TalesTrove/releases).
 2. Download the file for your browser:
-   - For Chrome/Chromium: Download `extension-chrome.zip`
-   - For Firefox: Download `extension-firefox.xpi`
+   - For Chrome/Chromium: Download `chrome-mv3-prod.zip`
+   - For Firefox: Download `firefox-mv2-prod.zip`
 3. Install the extension:
 
    - Chrome and Chromium browsers:
@@ -102,10 +102,9 @@ The extension will be available on official browser stores soon. Check back for 
      4. Select the extracted folder.
 
    - Firefox:
-     1. Go to `about:addons`.
-     2. Click the Settings icon.
-     3. Select `Install Add-on From File...`.
-     4. Select the downloaded .xpi file.
+     1. Go to `about:debugging#/runtime/this-firefox`.
+     2. Click `Load Temporary Add-on...`.
+     3. Select the Firefox zip.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -113,7 +112,7 @@ The extension will be available on official browser stores soon. Check back for 
 
 > [!NOTE]
 >
-> You must enable Developer Mode in your browser.
+> You must enable Developer Mode in Chrome/Chromium.
 
 > [!NOTE]
 >
@@ -159,10 +158,9 @@ The extension will be available on official browser stores soon. Check back for 
 
    - For Firefox:
 
-     1. Go to `about:addons`.
-     2. Click on the Settings icon.
-     3. Select `Install Add-on From File...`.
-     4. Navigate to the build folder and select the Firefox build.
+     1. Go to `about:debugging#/runtime/this-firefox`.
+     2. Click `Load Temporary Add-on...`.
+     3. Navigate to the Firefox build folder and select the `manifest.json` file.
 
 For further guidance, [visit Plasmo's Documentation](https://docs.plasmo.com/)
 
