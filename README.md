@@ -51,13 +51,17 @@ This project was built using the [Plasmo](https://docs.plasmo.com/) framework.
   - Author Subscriptions
 - QuestionableQuesting
   - Following Threads
+- SpaceBattles
+  - Following Threads
+- Sufficient Velocity
+  - Following Threads
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ## Sites Planned for Support
 
-- SpaceBattles
-  - Following Threads
+- Archive Of Our Own
+  - Bookmarks
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 

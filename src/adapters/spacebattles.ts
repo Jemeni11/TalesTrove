@@ -3,17 +3,17 @@ import { parseHTML } from "linkedom";
 import type { XenForoDataType } from "~types";
 import { customError } from "~utils";
 
-async function getQuestionableQuestingData() {
-  const adapterName = "QuestionableQuestingAdapter";
+async function getSpaceBattlesData() {
+  const adapterName = "SpaceBattlesAdapter";
 
   try {
-    let QQThreadsURL =
-      "https://forum.questionablequesting.com/watched/threads?unread=0";
+    let SBThreadsURL =
+      "https://forums.spacebattles.com/watched/threads?unread=0";
 
-    const QQData: XenForoDataType[] = [];
+    const SBData: XenForoDataType[] = [];
 
-    const createQQThreadsURL = (pageNumber: number) =>
-      `https://forum.questionablequesting.com/watched/threads?unread=0&page=${pageNumber}`;
+    const createSBThreadsURL = (pageNumber: number) =>
+      `https://forum.spacebattles.com/watched/threads?unread=0&page=${pageNumber}`;
 
     let numberOfPages = 1;
     let i = 1;
@@ -24,10 +24,10 @@ async function getQuestionableQuestingData() {
     do {
       try {
         if (i > 1) {
-          QQThreadsURL = createQQThreadsURL(i);
+          SBThreadsURL = createSBThreadsURL(i);
         }
 
-        const response = await fetch(QQThreadsURL, {
+        const response = await fetch(SBThreadsURL, {
           mode: "cors",
           credentials: "include",
           headers: {
@@ -60,19 +60,19 @@ async function getQuestionableQuestingData() {
             "div.structItem-title"
           ) as HTMLDivElement;
 
-          const storyName = Array.from(mainBlock.children)
-            .map((child) => child.textContent || "")
-            .join(" ")
-            .trim();
+          const storyATag: HTMLAnchorElement =
+            mainBlock.querySelector("a:not(.unreadLink)");
 
-          let storyLink = mainBlock.lastElementChild.getAttribute("href") || "";
+          let storyName = storyATag.textContent.trim();
+
+          let storyLink = storyATag.getAttribute("href") || "";
 
           if (storyLink.endsWith("/unread")) {
             storyLink = storyLink.replace("/unread", "");
           }
 
           if (storyLink.startsWith("/threads")) {
-            storyLink = "https://forum.questionablequesting.com" + storyLink;
+            storyLink = "https://forum.spacebattles.com" + storyLink;
           }
 
           const secondRow = liContent.querySelector(
@@ -89,8 +89,7 @@ async function getQuestionableQuestingData() {
               authorLink = anchor.getAttribute("href") || "";
 
               if (authorLink.startsWith("/members")) {
-                authorLink =
-                  "https://forum.questionablequesting.com" + authorLink;
+                authorLink = "https://forum.spacebattles.com" + authorLink;
               }
 
               authorName = anchor.textContent || "";
@@ -109,7 +108,7 @@ async function getQuestionableQuestingData() {
           };
         });
 
-        QQData.push(...urls);
+        SBData.push(...urls);
 
         const pageNavWrapper = document.querySelector(
           "nav.pageNavWrapper"
@@ -131,10 +130,10 @@ async function getQuestionableQuestingData() {
       }
     } while (i <= numberOfPages);
 
-    return QQData;
+    return SBData;
   } catch (error) {
     customError(adapterName, "An error occurred while fetching data", error);
   }
 }
 
-export default getQuestionableQuestingData;
+export default getSpaceBattlesData;

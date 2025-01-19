@@ -23,9 +23,9 @@ import type {
   expandedSectionsType,
   FFProcessedStoryData,
   fileFormatType,
-  QQDataType,
   sitesDataType,
-  SubscriptionResult
+  SubscriptionResult,
+  XenForoDataType
 } from "~types";
 import { handleExport } from "~utils";
 
@@ -62,7 +62,7 @@ const useDownloadManager = (
       });
 
       try {
-        await exportHandler(response.message, getSelectedFormats());
+        exportHandler(response.message, getSelectedFormats());
       } catch {
         setAllErrors((prev) => [...prev, response.error]);
       }
@@ -74,8 +74,24 @@ const useDownloadManager = (
   const handleQQDownload = () =>
     handleAdapterDownload({
       adapterId: "QuestionableQuestingAdapter",
-      exportHandler: (data: QQDataType[], formats: string[]) => {
+      exportHandler: (data: XenForoDataType[], formats: string[]) => {
         formats.forEach((format) => handleExport(data, "qq", format));
+      }
+    });
+
+  const handleSBDownload = () =>
+    handleAdapterDownload({
+      adapterId: "SpaceBattlesAdapter",
+      exportHandler: (data: XenForoDataType[], formats: string[]) => {
+        formats.forEach((format) => handleExport(data, "sb", format));
+      }
+    });
+
+  const handleSVDownload = () =>
+    handleAdapterDownload({
+      adapterId: "SufficientVelocityAdapter",
+      exportHandler: (data: XenForoDataType[], formats: string[]) => {
+        formats.forEach((format) => handleExport(data, "sv", format));
       }
     });
 
@@ -141,6 +157,14 @@ const useDownloadManager = (
 
       if (sitesDataState.questionableQuesting.following) {
         downloadTasks.push(handleQQDownload());
+      }
+
+      if (sitesDataState.spaceBattles.following) {
+        downloadTasks.push(handleSBDownload());
+      }
+
+      if (sitesDataState.sufficientVelocity.following) {
+        downloadTasks.push(handleSVDownload());
       }
 
       if (Object.values(sitesDataState.archiveOfOurOwn).some(Boolean)) {
@@ -256,7 +280,9 @@ export default function TalesTrove() {
     useState<expandedSectionsType>({
       fanfiction: false,
       archiveOfOurOwn: false,
-      questionableQuesting: false
+      questionableQuesting: false,
+      spaceBattles: false,
+      sufficientVelocity: false
     });
 
   const [isDownloadOpen, setIsDownloadOpen] = useState(false);

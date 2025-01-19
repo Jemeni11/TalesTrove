@@ -1,12 +1,16 @@
 import type {
   authorType,
   FFProcessedStoryData,
-  QQDataType,
-  workObjectType
+  workObjectType,
+  XenForoDataType
 } from "~types";
 
 export default function saveTXTFile(
-  data: QQDataType[] | FFProcessedStoryData[] | workObjectType[] | authorType[],
+  data:
+    | XenForoDataType[]
+    | FFProcessedStoryData[]
+    | workObjectType[]
+    | authorType[],
   fileName: string
 ) {
   if (data.length === 0) {
@@ -61,7 +65,7 @@ export default function saveTXTFile(
 }
 
 // Type Guards for Array
-function isQQDataArray(data: any[]): data is QQDataType[] {
+function isQQDataArray(data: any[]): data is XenForoDataType[] {
   return data.every((item) => "storyLink" in item && "storyName" in item);
 }
 

@@ -11,7 +11,7 @@ export type authorType = {
   link: string;
 };
 
-export type QQDataType = {
+export type XenForoDataType = {
   storyLink: string;
   storyName: string;
   authorLink: string;
@@ -60,6 +60,12 @@ export type sitesDataType = {
   questionableQuesting: {
     following: boolean;
   };
+  spaceBattles: {
+    following: false;
+  };
+  sufficientVelocity: {
+    following: false;
+  };
 };
 
 export type sitesDataTypeKey = keyof sitesDataType;
@@ -74,13 +80,10 @@ export type fileFormatType = {
 
 export type fileFormatTypeKey = keyof fileFormatType;
 
-export type subDataParams =
-  | keyof sitesDataType["fanfiction"]
-  | Exclude<keyof sitesDataType["archiveOfOurOwn"], "username">
-  | keyof sitesDataType["questionableQuesting"];
+export type subDataParams = {
+  [K in keyof sitesDataType]: K extends "archiveOfOurOwn"
+    ? Exclude<keyof sitesDataType[K], "username">
+    : keyof sitesDataType[K];
+}[keyof sitesDataType];
 
-export type expandedSectionsType = {
-  fanfiction: boolean;
-  archiveOfOurOwn: boolean;
-  questionableQuesting: boolean;
-};
+export type expandedSectionsType = Record<sitesDataTypeKey, boolean>;

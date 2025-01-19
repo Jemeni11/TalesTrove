@@ -15,9 +15,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.0] - 2025-01-19
+
+### Added
+
+- Space Battles (Following Threads)
+- Sufficient Velocity (Following Threads)
+- Ao3 Bookmarks to the planned support section of the docs
+
+### Changed
+
+- Renamed `QQDataType` to `XenForoDataType`
+- Simplified `subDataParams` and `expandedSectionsType`
+
+### Removed
+
+- Removed unneeded `await` from `exportHandler` in `popup.tsx`
+
 ## [1.0.0] - 2025-01-19
 
 Released TalesTrove
 
-[unreleased]: https://github.com/Jemeni11/TalesTrove/compare/v1.0.0...HEAD
+[unreleased]: https://github.com/Jemeni11/TalesTrove/compare/v1.1.0...HEAD
+[1.1.0]: https://github.com/Jemeni11/TalesTrove/releases/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/Jemeni11/TalesTrove/releases/tag/v1.0.0

@@ -4,7 +4,12 @@ import { Input, Section, SwitchItem } from "~components";
 import { Bookmark, BookOpen, FileText, User, Users } from "~icons";
 import { cn } from "~lib/utils";
 import { useSetAO3Username } from "~store";
-import type { sitesDataType, sitesDataTypeKey, subDataParams } from "~types";
+import type {
+  expandedSectionsType,
+  sitesDataType,
+  sitesDataTypeKey,
+  subDataParams
+} from "~types";
 
 export default function Main({
   expandedSections,
@@ -12,14 +17,8 @@ export default function Main({
   sitesDataState,
   toggleSitesData
 }: {
-  expandedSections: {
-    fanfiction: boolean;
-    archiveOfOurOwn: boolean;
-    questionableQuesting: boolean;
-  };
-  onToggle: (
-    section: "fanfiction" | "archiveOfOurOwn" | "questionableQuesting"
-  ) => void;
+  expandedSections: expandedSectionsType;
+  onToggle: (section: keyof sitesDataType) => void;
   sitesDataState: sitesDataType;
   toggleSitesData: (site: sitesDataTypeKey, subData: subDataParams) => void;
 }) {
@@ -121,6 +120,32 @@ export default function Main({
           checked={sitesDataState.questionableQuesting.following}
           onCheckedChange={() =>
             toggleSitesData("questionableQuesting", "following")
+          }
+        />
+      </Section>
+
+      <Section
+        title="SpaceBattles"
+        expanded={expandedSections.spaceBattles}
+        onToggle={() => onToggle("spaceBattles")}>
+        <SwitchItem
+          icon={<Bookmark className="w-4 h-4" />}
+          label="Followed Threads"
+          checked={sitesDataState.spaceBattles.following}
+          onCheckedChange={() => toggleSitesData("spaceBattles", "following")}
+        />
+      </Section>
+
+      <Section
+        title="SufficientVelocity"
+        expanded={expandedSections.sufficientVelocity}
+        onToggle={() => onToggle("sufficientVelocity")}>
+        <SwitchItem
+          icon={<Bookmark className="w-4 h-4" />}
+          label="Followed Threads"
+          checked={sitesDataState.sufficientVelocity.following}
+          onCheckedChange={() =>
+            toggleSitesData("sufficientVelocity", "following")
           }
         />
       </Section>

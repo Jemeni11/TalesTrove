@@ -1,11 +1,15 @@
 import type {
   authorType,
   FFProcessedStoryData,
-  QQDataType,
-  workObjectType
+  workObjectType,
+  XenForoDataType
 } from "~types";
 
-type JSONType = workObjectType | QQDataType | FFProcessedStoryData | authorType;
+type JSONType =
+  | workObjectType
+  | XenForoDataType
+  | FFProcessedStoryData
+  | authorType;
 
 export default function saveJSONFile(data: JSONType[], fileName: string) {
   if (data.length === 0) {
