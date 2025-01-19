@@ -63,6 +63,9 @@ export type sitesDataType = {
   spaceBattles: {
     following: false;
   };
+  sufficientVelocity: {
+    following: false;
+  };
 };
 
 export type sitesDataTypeKey = keyof sitesDataType;
@@ -77,10 +80,10 @@ export type fileFormatType = {
 
 export type fileFormatTypeKey = keyof fileFormatType;
 
-export type subDataParams =
-  | keyof sitesDataType["fanfiction"]
-  | Exclude<keyof sitesDataType["archiveOfOurOwn"], "username">
-  | keyof sitesDataType["questionableQuesting"]
-  | keyof sitesDataType["spaceBattles"];
+export type subDataParams = {
+  [K in keyof sitesDataType]: K extends "archiveOfOurOwn"
+    ? Exclude<keyof sitesDataType[K], "username">
+    : keyof sitesDataType[K];
+}[keyof sitesDataType];
 
 export type expandedSectionsType = Record<sitesDataTypeKey, boolean>;
