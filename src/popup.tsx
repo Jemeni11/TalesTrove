@@ -87,6 +87,14 @@ const useDownloadManager = (
       }
     });
 
+  const handleSVDownload = () =>
+    handleAdapterDownload({
+      adapterId: "SufficientVelocityAdapter",
+      exportHandler: (data: XenForoDataType[], formats: string[]) => {
+        formats.forEach((format) => handleExport(data, "sv", format));
+      }
+    });
+
   const handleAO3Download = () =>
     handleAdapterDownload({
       adapterId: "ArchiveOfOurOwnAdapter",
@@ -153,6 +161,10 @@ const useDownloadManager = (
 
       if (sitesDataState.spaceBattles.following) {
         downloadTasks.push(handleSBDownload());
+      }
+
+      if (sitesDataState.sufficientVelocity.following) {
+        downloadTasks.push(handleSVDownload());
       }
 
       if (Object.values(sitesDataState.archiveOfOurOwn).some(Boolean)) {
@@ -269,7 +281,8 @@ export default function TalesTrove() {
       fanfiction: false,
       archiveOfOurOwn: false,
       questionableQuesting: false,
-      spaceBattles: false
+      spaceBattles: false,
+      sufficientVelocity: false
     });
 
   const [isDownloadOpen, setIsDownloadOpen] = useState(false);
