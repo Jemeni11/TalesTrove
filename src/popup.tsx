@@ -199,7 +199,9 @@ const DownloadOptions: React.FC<{
       <div className="mt-2 space-y-2">
         <div className="flex justify-between items-center">
           <span className="text-sm">
-            {selectedSitesCount} Sites, {selectedFormatsCount} Formats Selected
+            {selectedSitesCount} Site Option{selectedSitesCount !== 1 && "s"},{" "}
+            {selectedFormatsCount} Format{selectedFormatsCount !== 1 && "s"}{" "}
+            Selected
           </span>
           <Button
             variant="ghost"
