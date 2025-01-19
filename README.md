@@ -14,6 +14,8 @@
   </p>
 </div>
 
+This project was built using the [Plasmo](https://docs.plasmo.com/) framework.
+
 ## Supported Sites
 
 - FanFiction.net
@@ -38,7 +40,91 @@
 
 ## Installation
 
-[Instructions for installing the browser extension - to be added]
+### Browser Extension Stores
+
+The extension will be available on official browser stores soon. Check back for updates.
+
+### Using Pre-built Files
+
+> [!NOTE]
+>
+> You must enable Developer Mode in your browser.
+
+1. Go to the [Releases Page](https://github.com/Jemeni11/TalesTrove/releases).
+2. Download the file for your browser:
+   - For Chrome/Chromium: Download `extension-chrome.zip`
+   - For Firefox: Download `extension-firefox.xpi`
+3. Install the extension:
+
+   - Chrome and Chromium browsers:
+
+     1. Extract the downloaded zip file.
+     2. Go to `chrome:extensions`.
+     3. Click `Load Unpacked`.
+     4. Select the extracted folder.
+
+   - Firefox:
+     1. Go to `about:addons`.
+     2. Click the Settings icon.
+     3. Select `Install Add-on From File...`.
+     4. Select the downloaded .xpi file.
+
+### Building From Source
+
+> [!NOTE]
+>
+> You must enable Developer Mode in your browser.
+
+> [!NOTE]
+>
+> This extension requires [pnpm](https://pnpm.io/) for building.
+
+1. Clone the repository and install dependencies.
+
+   ```sh
+    git clone https://www.github.com/Jemeni11/TalesTrove.git
+    cd TalesTrove
+    pnpm install
+   ```
+
+2. For development
+
+   ```sh
+   pnpm dev
+   ```
+
+   Then load the appropriate development build from the `build` directory.
+
+3. For production
+
+   - Chrome (and other Chromium Browsers)
+
+     ```sh
+     pnpm build
+     ```
+
+   - Firefox
+
+     ```sh
+     pnpm build:firefox
+     ```
+
+4. Install the built extension
+
+   - Chrome (and other Chromium Browsers):
+
+     1. Go to `chrome:extensions`.
+     2. Click `Load Unpacked`.
+     3. Navigate to the build folder and select the Chrome build.
+
+   - For Firefox:
+
+     1. Go to `about:addons`.
+     2. Click on the Settings icon.
+     3. Select `Install Add-on From File...`.
+     4. Navigate to the build folder and select the Firefox build.
+
+For further guidance, [visit Plasmo's Documentation](https://docs.plasmo.com/)
 
 ## Usage
 
@@ -67,42 +153,6 @@
 
   Additionally, this project is open source, so you can review the code yourself (or have someone who knows React and TypeScript take a look) to ensure we're staying true to our word.
 
-## Development
-
-This project was built using the [Plasmo](https://docs.plasmo.com/) framework.
-
-### Getting Started
-
-Clone the repository and install the dependencies:
-
-```bash
-git clone https://www.github.com/Jemeni11/Tales-Trove.git Tales-Trove
-cd Tales-Trove
-pnpm install
-```
-
-First, run the development server:
-
-```bash
-pnpm dev
-```
-
-Open your browser and load the appropriate development build. For example, if you are developing for the chrome browser, using manifest v3, use: `build/chrome-mv3-dev`.
-
-You can start editing the popup by modifying `popup.tsx`. It should auto-update as you make changes.
-
-For further guidance, [visit Plasmo's Documentation](https://docs.plasmo.com/)
-
-### Making production build
-
-Run the following:
-
-```bash
-pnpm build
-```
-
-This should create a production bundle for your extension, ready to be zipped and published to the stores.
-
 ## Contributing
 
 [Guidelines for contributing to the project - to be added]
@@ -110,7 +160,3 @@ This should create a production bundle for your extension, ready to be zipped an
 ## License
 
 [GPL-3.0 license](/LICENSE)
-
-## Submit to the webstores
-
-The easiest way to deploy your Plasmo extension is to use the built-in [bpp](https://bpp.browser.market) GitHub action. Prior to using this action however, make sure to build your extension and upload the first version to the store to establish the basic credentials. Then, simply follow [this setup instruction](https://docs.plasmo.com/framework/workflows/submit) and you should be on your way for automated submission!
