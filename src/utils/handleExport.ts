@@ -1,8 +1,8 @@
 import type {
   authorType,
   FFProcessedStoryData,
-  QQDataType,
-  workObjectType
+  workObjectType,
+  XenForoDataType
 } from "~types";
 import {
   saveBookmarkHTMLFile,
@@ -13,7 +13,11 @@ import {
 } from "~utils";
 
 export default function handleExport(
-  data: workObjectType[] | authorType[] | FFProcessedStoryData[] | QQDataType[],
+  data:
+    | workObjectType[]
+    | authorType[]
+    | FFProcessedStoryData[]
+    | XenForoDataType[],
   filePrefix: string,
   format: string
 ) {

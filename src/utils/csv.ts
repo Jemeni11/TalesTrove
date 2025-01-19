@@ -1,17 +1,23 @@
 import type {
   authorType,
   FFProcessedStoryData,
-  QQDataType,
-  workObjectType
+  workObjectType,
+  XenForoDataType
 } from "~types";
 
 type CSVConvertible =
   | workObjectType
   | authorType
   | FFProcessedStoryData
-  | QQDataType;
+  | XenForoDataType;
 
-export function convertToCSV(data: workObjectType[] | authorType[] | FFProcessedStoryData[] | QQDataType[]): string {
+export function convertToCSV(
+  data:
+    | workObjectType[]
+    | authorType[]
+    | FFProcessedStoryData[]
+    | XenForoDataType[]
+): string {
   if (data.length === 0) {
     return "";
   }
@@ -40,7 +46,11 @@ export function convertToCSV(data: workObjectType[] | authorType[] | FFProcessed
 }
 
 export default function saveCSVFile(
-  data: workObjectType[] | authorType[] | FFProcessedStoryData[] | QQDataType[],
+  data:
+    | workObjectType[]
+    | authorType[]
+    | FFProcessedStoryData[]
+    | XenForoDataType[],
   fileName: string
 ) {
   const csvData = convertToCSV(data);

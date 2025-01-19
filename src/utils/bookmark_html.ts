@@ -1,13 +1,13 @@
 import type {
   authorType,
   FFProcessedStoryData,
-  QQDataType,
-  workObjectType
+  workObjectType,
+  XenForoDataType
 } from "~types";
 
 type BookmarkType =
   | workObjectType
-  | QQDataType
+  | XenForoDataType
   | FFProcessedStoryData
   | authorType;
 

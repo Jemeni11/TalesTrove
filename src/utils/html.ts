@@ -1,18 +1,22 @@
 import type {
   authorType,
   FFProcessedStoryData,
-  QQDataType,
-  workObjectType
+  workObjectType,
+  XenForoDataType
 } from "~types";
 
 type HTMLConvertible =
   | workObjectType
   | authorType
   | FFProcessedStoryData
-  | QQDataType;
+  | XenForoDataType;
 
 export default function saveHTMLFile(
-  data: workObjectType[] | authorType[] | FFProcessedStoryData[] | QQDataType[],
+  data:
+    | workObjectType[]
+    | authorType[]
+    | FFProcessedStoryData[]
+    | XenForoDataType[],
   fileName: string
 ) {
   if (data.length === 0) {

@@ -1,6 +1,6 @@
 import { parseHTML } from "linkedom";
 
-import type { QQDataType } from "~types";
+import type { XenForoDataType } from "~types";
 import { customError } from "~utils";
 
 async function getQuestionableQuestingData() {
@@ -10,7 +10,7 @@ async function getQuestionableQuestingData() {
     let QQThreadsURL =
       "https://forum.questionablequesting.com/watched/threads?unread=0";
 
-    const QQData: QQDataType[] = [];
+    const QQData: XenForoDataType[] = [];
 
     const createQQThreadsURL = (pageNumber: number) =>
       `https://forum.questionablequesting.com/watched/threads?unread=0&page=${pageNumber}`;
