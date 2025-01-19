@@ -135,6 +135,20 @@ export default function Main({
           onCheckedChange={() => toggleSitesData("spaceBattles", "following")}
         />
       </Section>
+
+      <Section
+        title="SufficientVelocity"
+        expanded={expandedSections.sufficientVelocity}
+        onToggle={() => onToggle("sufficientVelocity")}>
+        <SwitchItem
+          icon={<Bookmark className="w-4 h-4" />}
+          label="Followed Threads"
+          checked={sitesDataState.sufficientVelocity.following}
+          onCheckedChange={() =>
+            toggleSitesData("sufficientVelocity", "following")
+          }
+        />
+      </Section>
     </div>
   );
 }
