@@ -4,7 +4,7 @@ import type {
   fileFormatType,
   fileFormatTypeKey,
   sitesDataType,
-  sitesDataTypeKey, 
+  sitesDataTypeKey,
   subDataParams
 } from "~types";
 
@@ -20,6 +20,9 @@ export const sitesData: sitesDataType = {
     username: ""
   },
   questionableQuesting: {
+    following: false
+  },
+  spaceBattles: {
     following: false
   }
 };
