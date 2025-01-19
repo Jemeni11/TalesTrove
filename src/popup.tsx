@@ -334,7 +334,9 @@ export default function TalesTrove() {
         <Button
           onClick={onDownloadClick}
           className="w-full rounded mt-4 bg-[#344955] text-white hover:bg-[hsl(203,11%,14%)]"
-          disabled={selectedFormatsCount === 0 || isLoading}>
+          disabled={
+            selectedSitesCount === 0 || selectedFormatsCount === 0 || isLoading
+          }>
           <Download className="w-4 h-4 mr-2" />
           {isLoading ? "Downloading..." : "Download Files"}
         </Button>
