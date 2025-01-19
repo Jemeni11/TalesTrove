@@ -8,6 +8,7 @@
     "dev": "plasmo dev",
     "devV": "plasmo dev --verbose",
     "build": "plasmo build",
+    "buildZip": "plasmo build --zip",
     "package": "plasmo package",
     "dev:firefox": "plasmo dev --target=firefox-mv2",
     "devV:firefox": "plasmo dev --target=firefox-mv2 --verbose",
