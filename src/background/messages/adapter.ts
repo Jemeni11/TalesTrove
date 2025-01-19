@@ -5,7 +5,8 @@ import {
   getFFFavoritesData,
   getFFFollowingData,
   getQuestionableQuestingData,
-  getSpaceBattlesData
+  getSpaceBattlesData,
+  getSufficientVelocityData
 } from "~adapters";
 import type {
   FFProcessedStoryData,
@@ -34,6 +35,9 @@ const handler: PlasmoMessaging.MessageHandler = async (req, res) => {
           break;
         case "SpaceBattlesAdapter":
           message = await getSpaceBattlesData();
+          break;
+        case "SufficientVelocityAdapter":
+          message = await getSufficientVelocityData();
           break;
         case "FanFictionNetFollowingAdapter":
           message = await getFFFollowingData();
