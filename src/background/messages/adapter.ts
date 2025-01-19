@@ -4,19 +4,23 @@ import {
   getArchiveOfOurOwnData,
   getFFFavoritesData,
   getFFFollowingData,
-  getQuestionableQuestingData
+  getQuestionableQuestingData,
+  getSpaceBattlesData
 } from "~adapters";
 import type {
   FFProcessedStoryData,
-  QQDataType,
-  SubscriptionResult
+  SubscriptionResult,
+  XenForoDataType
 } from "~types";
 
 const handler: PlasmoMessaging.MessageHandler = async (req, res) => {
   const site_id: string = req.body.id;
 
   try {
-    let message: QQDataType[] | FFProcessedStoryData[] | SubscriptionResult;
+    let message:
+      | XenForoDataType[]
+      | FFProcessedStoryData[]
+      | SubscriptionResult;
 
     if (site_id === "ArchiveOfOurOwnAdapter") {
       const types_array = Object.entries(req.body.type)
@@ -27,6 +31,9 @@ const handler: PlasmoMessaging.MessageHandler = async (req, res) => {
       switch (site_id) {
         case "QuestionableQuestingAdapter":
           message = await getQuestionableQuestingData();
+          break;
+        case "SpaceBattlesAdapter":
+          message = await getSpaceBattlesData();
           break;
         case "FanFictionNetFollowingAdapter":
           message = await getFFFollowingData();
