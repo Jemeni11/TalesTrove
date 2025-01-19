@@ -6,7 +6,7 @@
   <h1 align="center">TalesTrove</h1>
 
   <p align="center">
-    TalesTrove is a browser extension that allows users to easily save links to their favorite fictional stories and series from various platforms.
+    Easily Save Your Favorite Stories for Later.
     <br />
     <br />
     <a href="https://github.com/Jemeni11/Tales-Trove"><strong>Explore the repo »</strong></a>
