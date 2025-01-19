@@ -24,6 +24,9 @@ export const sitesData: sitesDataType = {
   },
   spaceBattles: {
     following: false
+  },
+  sufficientVelocity: {
+    following: false
   }
 };
 
