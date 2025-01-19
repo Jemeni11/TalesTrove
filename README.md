@@ -191,7 +191,7 @@ For further guidance, [visit Plasmo's Documentation](https://docs.plasmo.com/)
 
 - **Does this extension save/steal any of my data?**
 
-  Nope, TalesTrove doesn’t collect, store, or share any of your data. The extension doesn't send your info to third parties and doesn't track telemetry. So if this crashes... well, (no ~~beta~~ data, we die like men!).
+  Nope, TalesTrove doesn’t collect, store, or share any of your data. The extension doesn't send your info to third parties and doesn't track telemetry. So if this crashes... well, ([no ~~beta~~ data, we die like men!](https://archiveofourown.org/tags/no%20beta%20we%20die%20like%20men)).
 
   The only data TalesTrove stores is what you save when you click "Download". Your saved links are only stored locally on your own computer—it's not hoarded or sent anywhere. It’s all private, secure, and stays with you.
 
