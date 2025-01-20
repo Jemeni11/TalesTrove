@@ -84,7 +84,9 @@ This project was built using the [Plasmo](https://docs.plasmo.com/) framework.
 
 ### Browser Extension Stores
 
-The extension will be available on official browser stores soon. Check back for updates.
+- Mozilla Firefox Browser Add-ons: [Link](https://addons.mozilla.org/en-US/firefox/addon/tales_trove/)
+
+The extension will be available on other browser stores soon. Check back for updates.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
