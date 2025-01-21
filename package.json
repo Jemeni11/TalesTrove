@@ -46,7 +46,13 @@
   },
   "manifest": {
     "host_permissions": [
-      "https://*/*"
+      "https://archiveofourown.org/*",
+      "https://archiveofourown.gay/*",
+      "https://m.fanfiction.net/*",
+      "https://fanfiction.net/*",
+      "https://forum.questionablequesting.com/*",
+      "https://forums.spacebattles.com/*",
+      "https://forums.sufficientvelocity.com/*"
     ],
     "browser_specific_settings": {
       "gecko": {
