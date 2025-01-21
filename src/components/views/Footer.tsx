@@ -13,8 +13,10 @@ export default function Footer() {
       </p>
       <a
         href="https://github.com/Jemeni11/Tales-Trove"
+        target="_blank"
+        rel="noreferrer"
         className="mt-4 text-xs">
-        <strong>Explore the GitHub repo »</strong>
+        <strong>Check out the Manual »</strong>
       </a>
     </div>
   );
