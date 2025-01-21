@@ -92,7 +92,7 @@ The extension will be available on other browser stores soon. Check back for upd
 
 ### Using Pre-built Files
 
-> [!NOTE]
+> [!IMPORTANT]
 >
 > You must enable Developer Mode in Chrome/Chromium.
 
@@ -118,13 +118,21 @@ The extension will be available on other browser stores soon. Check back for upd
 
 ### Building From Source
 
-> [!NOTE]
+> [!IMPORTANT]
 >
 > You must enable Developer Mode in Chrome/Chromium.
 
+> [!IMPORTANT]
+>
+> This extension requires [Node](https://nodejs.org/) and [pnpm](https://pnpm.io/) for building.
+
 > [!NOTE]
 >
-> This extension requires [pnpm](https://pnpm.io/) for building.
+> This extension was built with
+>
+> - Node v22.13.0
+> - pnpm v9.15.3
+> - Windows 11 Pro 21H2
 
 1. Clone the repository and install dependencies.
 
