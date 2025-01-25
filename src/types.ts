@@ -76,6 +76,7 @@ export type fileFormatType = {
   csv: boolean;
   html: boolean;
   bookmarksHtml: boolean;
+  linksOnly: boolean;
 };
 
 export type fileFormatTypeKey = keyof fileFormatType;
