@@ -9,6 +9,7 @@ import {
   Download,
   HTMLIcon,
   JSONIcon,
+  LinksOnlyTXTIcon,
   TXTIcon
 } from "~icons";
 import { cn } from "~lib/utils";
@@ -23,6 +24,7 @@ import type {
   expandedSectionsType,
   FFProcessedStoryData,
   fileFormatType,
+  fileFormatTypeKey,
   sitesDataType,
   SubscriptionResult,
   XenForoDataType
@@ -44,7 +46,7 @@ const useDownloadManager = (
   const getSelectedFormats = () =>
     Object.entries(fileFormatState)
       .filter(([_, isSelected]) => isSelected)
-      .map(([format]) => format);
+      .map(([format]) => format) as fileFormatTypeKey[];
 
   const handleAdapterDownload = async ({
     adapterId,
@@ -53,7 +55,7 @@ const useDownloadManager = (
   }: {
     adapterId: string;
     body?: Record<string, any>;
-    exportHandler: (data: any, formats: string[]) => void;
+    exportHandler: (data: any, formats: fileFormatTypeKey[]) => void;
   }) => {
     try {
       const response = await sendToBackground({
@@ -74,7 +76,10 @@ const useDownloadManager = (
   const handleQQDownload = () =>
     handleAdapterDownload({
       adapterId: "QuestionableQuestingAdapter",
-      exportHandler: (data: XenForoDataType[], formats: string[]) => {
+      exportHandler: (
+        data: XenForoDataType[],
+        formats: fileFormatTypeKey[]
+      ) => {
         formats.forEach((format) => handleExport(data, "qq", format));
       }
     });
@@ -82,7 +87,10 @@ const useDownloadManager = (
   const handleSBDownload = () =>
     handleAdapterDownload({
       adapterId: "SpaceBattlesAdapter",
-      exportHandler: (data: XenForoDataType[], formats: string[]) => {
+      exportHandler: (
+        data: XenForoDataType[],
+        formats: fileFormatTypeKey[]
+      ) => {
         formats.forEach((format) => handleExport(data, "sb", format));
       }
     });
@@ -90,7 +98,10 @@ const useDownloadManager = (
   const handleSVDownload = () =>
     handleAdapterDownload({
       adapterId: "SufficientVelocityAdapter",
-      exportHandler: (data: XenForoDataType[], formats: string[]) => {
+      exportHandler: (
+        data: XenForoDataType[],
+        formats: fileFormatTypeKey[]
+      ) => {
         formats.forEach((format) => handleExport(data, "sv", format));
       }
     });
@@ -106,7 +117,10 @@ const useDownloadManager = (
           series: sitesDataState.archiveOfOurOwn.series
         }
       },
-      exportHandler: (data: SubscriptionResult, formats: string[]) => {
+      exportHandler: (
+        data: SubscriptionResult,
+        formats: fileFormatTypeKey[]
+      ) => {
         formats.forEach((format) => {
           if (data.works) handleExport(data.works, "ao3_works", format);
           if (data.authors) handleExport(data.authors, "ao3_authors", format);
@@ -137,7 +151,7 @@ const useDownloadManager = (
             adapterId,
             exportHandler: (
               data: FFProcessedStoryData[],
-              formats: string[]
+              formats: fileFormatTypeKey[]
             ) => {
               formats.forEach((format) =>
                 handleExport(data, exportPrefix, format)
@@ -270,6 +284,13 @@ const DownloadOptions: React.FC<{
           checked={fileFormatState.bookmarksHtml}
           onCheckedChange={() => toggleFileFormat("bookmarksHtml")}
         />
+        <SwitchItem
+          id="linksOnly"
+          icon={<LinksOnlyTXTIcon />}
+          label="Links Only TXT"
+          checked={fileFormatState.linksOnly}
+          onCheckedChange={() => toggleFileFormat("linksOnly")}
+        />
       </div>
     </details>
   );
@@ -308,9 +329,14 @@ export default function TalesTrove() {
     setExpandedSections((prev) => ({ ...prev, [section]: !prev[section] }));
   };
 
-  const selectedSitesCount = Object.values(sitesDataState)
-    .flatMap((site) => Object.values(site))
-    .filter(Boolean).length;
+  const selectedSitesCount = Object.entries(sitesDataState).flatMap(
+    ([siteKey, siteData]) =>
+      Object.entries(siteData).filter(
+        ([key, value]) =>
+          !(siteKey === "archiveOfOurOwn" && key === "username") &&
+          Boolean(value)
+      )
+  ).length;
 
   const selectedFormatsCount =
     Object.values(fileFormatState).filter(Boolean).length;

@@ -15,6 +15,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.2.0] - 2025-01-25
+
+### Added
+
+- New export format `LinksOnlyTXT` for better compatibility with other tools.
+- New `LinksOnlyTXTIcon` in `src/icons.tsx`.
+- Microsoft Edge Add-ons link in `README.md`.
+
+### Changed
+
+- Modified the type of `format` parameter in `handleExport` function from `string` to `fileFormatTypeKey` in `src/utils/handleExport.ts`.
+- Updated icons and labels in `src/components/views/Main.tsx`.
+- Updated the GitHub link label in `src/components/views/Footer.tsx`.
+- Updated export handler function to use `fileFormatTypeKey` in various places in `src/popup.tsx`.
+- Updated the note to important in `README.md`.
+
+### Fixed
+
+- Corrected the calculation of `selectedSitesCount` in `src/components/views/Main.tsx`.
+
 ## [1.1.0] - 2025-01-19
 
 ### Added
@@ -36,6 +56,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 Released TalesTrove
 
-[unreleased]: https://github.com/Jemeni11/TalesTrove/compare/v1.1.0...HEAD
+[unreleased]: https://github.com/Jemeni11/TalesTrove/compare/v1.2.0...HEAD
+[1.2.0]: https://github.com/Jemeni11/TalesTrove/releases/compare/v1.1.0...v1.2.0
 [1.1.0]: https://github.com/Jemeni11/TalesTrove/releases/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/Jemeni11/TalesTrove/releases/tag/v1.0.0
