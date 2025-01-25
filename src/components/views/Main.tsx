@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 
 import { Input, Section, SwitchItem } from "~components";
-import { Bookmark, BookOpen, FileText, User, Users } from "~icons";
+import { Bookmark, File, Files, Heart, User } from "~icons";
 import { cn } from "~lib/utils";
 import { useSetAO3Username } from "~store";
 import type {
@@ -53,14 +53,14 @@ export default function Main({
         expanded={expandedSections.fanfiction}
         onToggle={() => onToggle("fanfiction")}>
         <SwitchItem
-          icon={<Bookmark className="w-4 h-4" />}
-          label="Favorites"
+          icon={<Heart className="w-4 h-4" />}
+          label="Favorites Stories"
           checked={sitesDataState.fanfiction.favorites}
           onCheckedChange={() => toggleSitesData("fanfiction", "favorites")}
         />
         <SwitchItem
-          icon={<User className="w-4 h-4" />}
-          label="Following"
+          icon={<Bookmark className="w-4 h-4" />}
+          label="Followed Stories"
           checked={sitesDataState.fanfiction.following}
           onCheckedChange={() => toggleSitesData("fanfiction", "following")}
         />
@@ -91,19 +91,19 @@ export default function Main({
           Username is required
         </small>
         <SwitchItem
-          icon={<BookOpen className="w-4 h-4" />}
+          icon={<File className="w-4 h-4" />}
           label="Work Subscriptions"
           checked={sitesDataState.archiveOfOurOwn.work}
           onCheckedChange={() => handleOptionToggle("work")}
         />
         <SwitchItem
-          icon={<FileText className="w-4 h-4" />}
+          icon={<Files className="w-4 h-4" />}
           label="Series Subscriptions"
           checked={sitesDataState.archiveOfOurOwn.series}
           onCheckedChange={() => handleOptionToggle("series")}
         />
         <SwitchItem
-          icon={<Users className="w-4 h-4" />}
+          icon={<User className="w-4 h-4" />}
           label="Author Subscriptions"
           checked={sitesDataState.archiveOfOurOwn.author}
           onCheckedChange={() => handleOptionToggle("author")}
@@ -115,8 +115,8 @@ export default function Main({
         expanded={expandedSections.questionableQuesting}
         onToggle={() => onToggle("questionableQuesting")}>
         <SwitchItem
-          icon={<Bookmark className="w-4 h-4" />}
-          label="Followed Threads"
+          icon={<Files className="w-4 h-4" />}
+          label="Watched Threads"
           checked={sitesDataState.questionableQuesting.following}
           onCheckedChange={() =>
             toggleSitesData("questionableQuesting", "following")
@@ -129,8 +129,8 @@ export default function Main({
         expanded={expandedSections.spaceBattles}
         onToggle={() => onToggle("spaceBattles")}>
         <SwitchItem
-          icon={<Bookmark className="w-4 h-4" />}
-          label="Followed Threads"
+          icon={<Files className="w-4 h-4" />}
+          label="Watched Threads"
           checked={sitesDataState.spaceBattles.following}
           onCheckedChange={() => toggleSitesData("spaceBattles", "following")}
         />
@@ -141,8 +141,8 @@ export default function Main({
         expanded={expandedSections.sufficientVelocity}
         onToggle={() => onToggle("sufficientVelocity")}>
         <SwitchItem
-          icon={<Bookmark className="w-4 h-4" />}
-          label="Followed Threads"
+          icon={<Files className="w-4 h-4" />}
+          label="Watched Threads"
           checked={sitesDataState.sufficientVelocity.following}
           onCheckedChange={() =>
             toggleSitesData("sufficientVelocity", "following")
