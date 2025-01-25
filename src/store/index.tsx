@@ -35,7 +35,8 @@ export const fileFormat: fileFormatType = {
   txt: false,
   csv: false,
   html: false,
-  bookmarksHtml: false
+  bookmarksHtml: false,
+  linksOnly: false
 };
 
 export const sitesDataAtom = atom(sitesData);
