@@ -45,18 +45,18 @@ This project was built using the [Plasmo](https://docs.plasmo.com/) framework.
 ## Supported Sites
 
 - FanFiction.net
-  - Favorites
-  - Following
+  - Favorites Stories
+  - Following Stories
 - Archive Of Our Own
   - Work Subscriptions
   - Series Subscriptions
   - Author Subscriptions
 - QuestionableQuesting
-  - Following Threads
+  - Watched Threads
 - SpaceBattles
-  - Following Threads
+  - Watched Threads
 - Sufficient Velocity
-  - Following Threads
+  - Watched Threads
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -75,7 +75,8 @@ This project was built using the [Plasmo](https://docs.plasmo.com/) framework.
   - TXT for simple text listings
   - CSV for spreadsheet compatibility
   - HTML for web viewing
-  - Bookmark HTML File for browser importing
+  - Bookmark HTML for browser importing
+  - LinksOnly TXT for plain links, line-separated, ideal for easy parsing when only the links are needed, including use with fanfiction tools like [FicHubCLI](https://github.com/FicHub/fichub-cli).
 - Simple, user-friendly interface
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
