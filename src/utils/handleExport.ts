@@ -1,6 +1,7 @@
 import type {
   authorType,
   FFProcessedStoryData,
+  fileFormatTypeKey,
   workObjectType,
   XenForoDataType
 } from "~types";
@@ -9,6 +10,7 @@ import {
   saveCSVFile,
   saveHTMLFile,
   saveJSONFile,
+  saveLinksOnlyTXTFile,
   saveTXTFile
 } from "~utils";
 
@@ -19,7 +21,7 @@ export default function handleExport(
     | FFProcessedStoryData[]
     | XenForoDataType[],
   filePrefix: string,
-  format: string
+  format: fileFormatTypeKey
 ) {
   switch (format) {
     case "csv":
@@ -36,6 +38,9 @@ export default function handleExport(
       break;
     case "bookmarksHtml":
       saveBookmarkHTMLFile(data, `${filePrefix}_bookmarks.html`);
+      break;
+    case "linksOnly":
+      saveLinksOnlyTXTFile(data, `${filePrefix}_linksOnly.txt`);
       break;
   }
 }
