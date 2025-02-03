@@ -27,6 +27,8 @@ Table of Contents
   - [Using Pre-built Files](#using-pre-built-files)
   - [Building From Source](#building-from-source)
 - [Usage](#usage)
+  - [With fichub-cli](#with-fichub-cli)
+  - [With FanFicFare](#with-fanficfare)
 - [FAQ](#faq)
 - [Contributing](#contributing)
 - [Why did I build this?](#why-did-i-build-this)
@@ -76,7 +78,7 @@ This project was built using the [Plasmo](https://docs.plasmo.com/) framework.
   - CSV for spreadsheet compatibility
   - HTML for web viewing
   - Bookmark HTML for browser importing
-  - LinksOnly TXT for plain links, line-separated, ideal for easy parsing when only the links are needed, including use with fanfiction tools like [FicHubCLI](https://github.com/FicHub/fichub-cli).
+  - LinksOnly TXT for plain links, line-separated, ideal for easy parsing when only the links are needed, including use with fanfiction tools like [FicHubCLI](https://github.com/FicHub/fichub-cli) and [FanFicFare](https://github.com/JimmXinu/FanFicFare/).
 - Simple, user-friendly interface
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
@@ -192,6 +194,38 @@ For further guidance, [visit Plasmo's Documentation](https://docs.plasmo.com/)
 1. Click on the TalesTrove icon in your browser's extension area.
 2. Configure your preferences for each supported website.
 3. Use the "Download Links" section to export your saved links.
+
+### With fichub-cli
+
+> [!IMPORTANT]
+> You must have [fichub-cli](https://github.com/FicHub/fichub-cli) installed to continue.
+
+fichub-cli is a command-line interface tool that interacts with the [FicHub.net](https://fichub.net/) API, enabling fanfiction enthusiasts to automate the process of converting fanfiction URLs into standardized eBook formats.
+
+1. Download your links using the `LinksOnlyTXT` format.
+2. Use the file with fichub-cli like this:
+
+   ```bash
+
+    fichub_cli -i .\ao3_works_linksOnly.txt
+
+   ```
+
+### With FanFicFare
+
+> [!IMPORTANT]
+> You must have [FanFicFare](https://github.com/JimmXinu/FanFicFare) installed to continue.
+
+FanFicFare is a tool for making eBooks from stories on fanfiction and other web sites.
+
+1. Download your links using the `LinksOnlyTXT` format.
+2. Use the file with FanFicFare like this:
+
+   ```bash
+
+    fanficfare -i .\ao3_works_linksOnly.txt
+
+   ```
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
