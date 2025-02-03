@@ -13,7 +13,7 @@ async function getSpaceBattlesData() {
     const SBData: XenForoDataType[] = [];
 
     const createSBThreadsURL = (pageNumber: number) =>
-      `https://forum.spacebattles.com/watched/threads?unread=0&page=${pageNumber}`;
+      `https://forums.spacebattles.com/watched/threads?unread=0&page=${pageNumber}`;
 
     let numberOfPages = 1;
     let i = 1;
@@ -72,7 +72,7 @@ async function getSpaceBattlesData() {
           }
 
           if (storyLink.startsWith("/threads")) {
-            storyLink = "https://forum.spacebattles.com" + storyLink;
+            storyLink = "https://forums.spacebattles.com" + storyLink;
           }
 
           const secondRow = liContent.querySelector(
@@ -89,7 +89,7 @@ async function getSpaceBattlesData() {
               authorLink = anchor.getAttribute("href") || "";
 
               if (authorLink.startsWith("/members")) {
-                authorLink = "https://forum.spacebattles.com" + authorLink;
+                authorLink = "https://forums.spacebattles.com" + authorLink;
               }
 
               authorName = anchor.textContent || "";
