@@ -90,6 +90,7 @@ This project was built using the [Plasmo](https://docs.plasmo.com/) framework.
 - Mozilla Firefox Browser Add-ons: [Link](https://addons.mozilla.org/en-US/firefox/addon/tales_trove/)
 - Microsoft Edge Add-ons: [Link](https://microsoftedge.microsoft.com/addons/detail/talestrove/lahledcnahkanmigdbaglgagcdleopjd)
 - Chrome Web Store: [Link](https://chromewebstore.google.com/detail/cjealedijmcdnkkfpgmobhaohjljlojg)
+- Opera Add-ons v1.0.0: [Link](https://addons.opera.com/en-gb/extensions/details/talestrove/)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
