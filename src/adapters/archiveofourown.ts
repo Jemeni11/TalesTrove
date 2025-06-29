@@ -32,7 +32,8 @@ function cleanAuthorArray(array: authorType[]): authorType[] {
 
 async function getArchiveOfOurOwnData(
   username: string,
-  types?: ("author" | "work" | "series")[]
+  alternateTLD: boolean,
+  types?: ("author" | "work" | "series")[],
 ): Promise<SubscriptionResult> {
   const adapterName = "ArchiveOfOurOwnAdapter";
 
@@ -41,7 +42,8 @@ async function getArchiveOfOurOwnData(
   }
 
   try {
-    const baseURL = `https://archiveofourown.org/users/${username}/subscriptions`;
+    const tld = alternateTLD ? "gay" : "org"
+    const baseURL = `https://archiveofourown.${tld}/users/${username}/subscriptions`;
     const typeQueryParam = types?.length === 1 ? `type=${types[0]}` : "";
 
     const createAO3SubscriptionURL = (pageNumber?: number) => {
@@ -129,12 +131,12 @@ async function getArchiveOfOurOwnData(
             if (link.href.includes("/users/")) {
               authors.push({
                 name: linkTextContent,
-                link: "https://archiveofourown.org" + link.href
+                link: `https://archiveofourown.${tld}${link.href}`
               });
             } else {
               const isSeries = link.href.includes("/series/");
 
-              const workLink = "https://archiveofourown.org" + link.href;
+              const workLink = `https://archiveofourown.${tld}${link.href}`;
               const workTitle = linkTextContent;
 
               const workObject = {
@@ -143,7 +145,7 @@ async function getArchiveOfOurOwnData(
                 link: workLink,
                 authorName: ["Anonymous"],
                 authorLink: [
-                  "https://archiveofourown.org/collections/anonymous"
+                  `https://archiveofourown.${tld}/collections/anonymous`
                 ]
               };
 
@@ -165,10 +167,10 @@ async function getArchiveOfOurOwnData(
             );
 
             const authorLinks = authorsAnchorTag.map(
-              (author) => "https://archiveofourown.org" + author.href
+              (author) => `https://archiveofourown.${tld}${author.href}`
             );
 
-            const workLink = "https://archiveofourown.org" + workAnchorTag.href;
+            const workLink = `https://archiveofourown.${tld}${workAnchorTag.href}`
 
             const workObject = {
               id: workLink,
