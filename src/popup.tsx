@@ -115,7 +115,8 @@ const useDownloadManager = (
           author: sitesDataState.archiveOfOurOwn.author,
           work: sitesDataState.archiveOfOurOwn.work,
           series: sitesDataState.archiveOfOurOwn.series
-        }
+        },
+        alternateTLD: sitesDataState.archiveOfOurOwn.alternateTLD
       },
       exportHandler: (
         data: SubscriptionResult,
