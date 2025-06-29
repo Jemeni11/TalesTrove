@@ -1,7 +1,7 @@
 {
   "name": "tales-trove",
   "displayName": "TalesTrove",
-  "version": "1.3.0",
+  "version": "1.3.1",
   "description": "TalesTrove is a browser extension that allows users to easily save links to their favorite fictional stories and series.",
   "author": "Emmanuel C. Jemeni <emmanueljemeni@gmail.com>",
   "scripts": {
