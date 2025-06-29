@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 
 import { Input, Section, SwitchItem } from "~components";
-import { Bookmark, File, Files, Heart, User } from "~icons";
+import { Bookmark, File, Files, Globe, Heart, User } from "~icons";
 import { cn } from "~lib/utils";
 import { useSetAO3Username } from "~store";
 import type {
@@ -107,6 +107,12 @@ export default function Main({
           label="Author Subscriptions"
           checked={sitesDataState.archiveOfOurOwn.author}
           onCheckedChange={() => handleOptionToggle("author")}
+        />
+        <SwitchItem
+          icon={<Globe className="w-4 h-4" />}
+          label="Switch to .gay domain"
+          checked={sitesDataState.archiveOfOurOwn.alternateTLD}
+          onCheckedChange={() => handleOptionToggle("alternateTLD")}
         />
       </Section>
 
