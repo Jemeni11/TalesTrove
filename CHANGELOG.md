@@ -15,6 +15,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.3.1] - 2025-06-29
+
+### Added
+- Full support for Ao3's alternate TLD (.gay)
+- New Globe icon component for domain toggle
+- UI toggle switch for .gay/.org domain selection
+- Type definition for alternateTLD flag in store
+- AlternateTLD parameter in popup AO3 request
+- AlternateTLD to AO3 store defaults
+
+### Changed
+- Refactored adapter message handler to use switch-case
+- Updated AO3 URL generation to support dynamic TLDs
+
 ## [1.3.0] - 2025-02-03
 
 ### Added
@@ -69,7 +83,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 Released TalesTrove
 
-[unreleased]: https://github.com/Jemeni11/TalesTrove/compare/v1.3.0...HEAD
+[unreleased]: https://github.com/Jemeni11/TalesTrove/compare/v1.3.1...HEAD
+[1.3.1]: https://github.com/Jemeni11/TalesTrove/releases/compare/v1.3.0...v1.3.1
 [1.3.0]: https://github.com/Jemeni11/TalesTrove/releases/compare/v1.2.0...v1.3.0
 [1.2.0]: https://github.com/Jemeni11/TalesTrove/releases/compare/v1.1.0...v1.2.0
 [1.1.0]: https://github.com/Jemeni11/TalesTrove/releases/compare/v1.0.0...v1.1.0
