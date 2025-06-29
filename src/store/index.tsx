@@ -17,7 +17,8 @@ export const sitesData: sitesDataType = {
     work: false,
     series: false,
     author: false,
-    username: ""
+    username: "",
+    alternateTLD: false
   },
   questionableQuesting: {
     following: false
