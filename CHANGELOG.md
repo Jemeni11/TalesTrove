@@ -18,28 +18,35 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.3.1] - 2025-06-29
 
 ### Added
+
 - Full support for Ao3's alternate TLD (.gay)
 - New Globe icon component for domain toggle
 - UI toggle switch for .gay/.org domain selection
 - Type definition for alternateTLD flag in store
-- AlternateTLD parameter in popup AO3 request
-- AlternateTLD to AO3 store defaults
+- Added AlternateTLD parameter in popup AO3 request
+- Added AlternateTLD to AO3 store defaults
+- Added FicRadar to related projects list
 
 ### Changed
+
 - Refactored adapter message handler to use switch-case
 - Updated AO3 URL generation to support dynamic TLDs
+- Updated README motivation section with more details about AO3 integration and duplicate filtering
 
 ## [1.3.0] - 2025-02-03
 
 ### Added
+
 - Support for `https://forum.spacebattles.com/*` in browser permissions
 
 ### Changed
+
 - Updated SpaceBattles adapter to only use `forums.spacebattles.com` URLs
 - Updated README to include more comprehensive information about `fichub-cli` and `FanFicFare`
 - Added [FanFicFare](https://github.com/JimmXinu/FanFicFare/) to the LinksOnly TXT feature description
 
 ### Fixed
+
 - Corrected URL handling for SpaceBattles thread and member links
 
 ## [1.2.0] - 2025-01-25
