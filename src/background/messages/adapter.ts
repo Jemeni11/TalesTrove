@@ -23,31 +23,34 @@ const handler: PlasmoMessaging.MessageHandler = async (req, res) => {
       | FFProcessedStoryData[]
       | SubscriptionResult;
 
-    if (site_id === "ArchiveOfOurOwnAdapter") {
-      const types_array = Object.entries(req.body.type)
-        .filter(([_, value]) => value)
-        .map(([key]) => key) as ("author" | "work" | "series")[];
-      message = await getArchiveOfOurOwnData(req.body?.username, types_array);
-    } else {
-      switch (site_id) {
-        case "QuestionableQuestingAdapter":
-          message = await getQuestionableQuestingData();
-          break;
-        case "SpaceBattlesAdapter":
-          message = await getSpaceBattlesData();
-          break;
-        case "SufficientVelocityAdapter":
-          message = await getSufficientVelocityData();
-          break;
-        case "FanFictionNetFollowingAdapter":
-          message = await getFFFollowingData();
-          break;
-        case "FanFictionNetFavoritesAdapter":
-          message = await getFFFavoritesData();
-          break;
-        default:
-          message = [];
-      }
+    switch (site_id) {
+      case "ArchiveOfOurOwnAdapter":
+        const types_array = Object.entries(req.body.type)
+          .filter(([_, value]) => value)
+          .map(([key]) => key) as ("author" | "work" | "series")[];
+        message = await getArchiveOfOurOwnData(
+          req.body?.username,
+          req.body?.alternateTLD,
+          types_array
+        );
+        break;
+      case "QuestionableQuestingAdapter":
+        message = await getQuestionableQuestingData();
+        break;
+      case "SpaceBattlesAdapter":
+        message = await getSpaceBattlesData();
+        break;
+      case "SufficientVelocityAdapter":
+        message = await getSufficientVelocityData();
+        break;
+      case "FanFictionNetFollowingAdapter":
+        message = await getFFFollowingData();
+        break;
+      case "FanFictionNetFavoritesAdapter":
+        message = await getFFFavoritesData();
+        break;
+      default:
+        message = [];
     }
 
     res.send({ message });
