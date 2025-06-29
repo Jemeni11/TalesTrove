@@ -56,6 +56,7 @@ export type sitesDataType = {
     series: boolean;
     author: boolean;
     username: string;
+    alternateTLD: boolean;
   };
   questionableQuesting: {
     following: boolean;
