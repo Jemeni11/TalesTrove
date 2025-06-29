@@ -257,9 +257,13 @@ Contributions are welcome! If you'd like to improve TalesTrove, please feel free
 
 ## Why did I build this?
 
-I like fanfiction and I like having local copies of my data. So, I built this extension to get my data for me!
+I like fanfiction and I like having local copies of my data. So, I built this extension to get it for me.
 
-I've made other fanfiction tools before like [FicImage](https://github.com/Jemeni11/FicImage). I've also contributed to tools like [WebToEpub](https://github.com/dteviot/WebToEpub) and [Leech.py](https://github.com/kemayo/leech).
+Another reason was AO3. While I love ao3, the subscription page ... 💀 One of those pages literally has the same work duplicated multiple times. When TalesTrove downloads your subscriptions, it automatically filters out duplicates.
+
+I've made other fanfiction tools before like [FicImage](https://github.com/Jemeni11/FicImage) and [FicRadar (WIP)](https://github.com/Jemeni11/FicRadar). I've also contributed to tools like [WebToEpub](https://github.com/dteviot/WebToEpub) and [Leech.py](https://github.com/kemayo/leech).
+
+I hope TalesTrove helps make managing your subscriptions a little easier too.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
