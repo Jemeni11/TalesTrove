@@ -62,10 +62,10 @@ export type sitesDataType = {
     following: boolean;
   };
   spaceBattles: {
-    following: false;
+    following: boolean;
   };
   sufficientVelocity: {
-    following: false;
+    following: boolean;
   };
 };
 
