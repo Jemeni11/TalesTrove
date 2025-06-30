@@ -27,7 +27,7 @@ import type {
   fileFormatTypeKey,
   sitesDataType,
   SubscriptionResult,
-  XenForoDataType
+  BasicStoryAndAuthorType
 } from "~types";
 import { handleExport } from "~utils";
 
@@ -77,7 +77,7 @@ const useDownloadManager = (
     handleAdapterDownload({
       adapterId: "QuestionableQuestingAdapter",
       exportHandler: (
-        data: XenForoDataType[],
+        data: BasicStoryAndAuthorType[],
         formats: fileFormatTypeKey[]
       ) => {
         formats.forEach((format) => handleExport(data, "qq", format));
@@ -88,7 +88,7 @@ const useDownloadManager = (
     handleAdapterDownload({
       adapterId: "SpaceBattlesAdapter",
       exportHandler: (
-        data: XenForoDataType[],
+        data: BasicStoryAndAuthorType[],
         formats: fileFormatTypeKey[]
       ) => {
         formats.forEach((format) => handleExport(data, "sb", format));
@@ -99,7 +99,7 @@ const useDownloadManager = (
     handleAdapterDownload({
       adapterId: "SufficientVelocityAdapter",
       exportHandler: (
-        data: XenForoDataType[],
+        data: BasicStoryAndAuthorType[],
         formats: fileFormatTypeKey[]
       ) => {
         formats.forEach((format) => handleExport(data, "sv", format));
