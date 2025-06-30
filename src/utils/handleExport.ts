@@ -3,7 +3,7 @@ import type {
   FFProcessedStoryData,
   fileFormatTypeKey,
   workObjectType,
-  XenForoDataType
+  BasicStoryAndAuthorType
 } from "~types";
 import {
   saveBookmarkHTMLFile,
@@ -19,7 +19,7 @@ export default function handleExport(
     | workObjectType[]
     | authorType[]
     | FFProcessedStoryData[]
-    | XenForoDataType[],
+    | BasicStoryAndAuthorType[],
   filePrefix: string,
   format: fileFormatTypeKey
 ) {
