@@ -1,6 +1,6 @@
 import { parseHTML } from "linkedom";
 
-import type { XenForoDataType } from "~types";
+import type { BasicStoryAndAuthorType } from "~types";
 import { customError } from "~utils";
 
 async function getSpaceBattlesData() {
@@ -10,7 +10,7 @@ async function getSpaceBattlesData() {
     let SBThreadsURL =
       "https://forums.spacebattles.com/watched/threads?unread=0";
 
-    const SBData: XenForoDataType[] = [];
+    const SBData: BasicStoryAndAuthorType[] = [];
 
     const createSBThreadsURL = (pageNumber: number) =>
       `https://forums.spacebattles.com/watched/threads?unread=0&page=${pageNumber}`;
@@ -63,7 +63,7 @@ async function getSpaceBattlesData() {
           const storyATag: HTMLAnchorElement =
             mainBlock.querySelector("a:not(.unreadLink)");
 
-          let storyName = storyATag.textContent.trim();
+          let storyTitle = storyATag.textContent.trim();
 
           let storyLink = storyATag.getAttribute("href") || "";
 
@@ -102,7 +102,7 @@ async function getSpaceBattlesData() {
 
           return {
             storyLink,
-            storyName,
+            storyTitle,
             authorLink,
             authorName
           };
