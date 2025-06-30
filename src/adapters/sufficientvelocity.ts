@@ -1,6 +1,6 @@
 import { parseHTML } from "linkedom";
 
-import type { XenForoDataType } from "~types";
+import type { BasicStoryAndAuthorType } from "~types";
 import { customError } from "~utils";
 
 async function getSufficientVelocityData() {
@@ -10,7 +10,7 @@ async function getSufficientVelocityData() {
     let svThreadsURL =
       "https://forums.sufficientvelocity.com/watched/threads?unread=0";
 
-    const svData: XenForoDataType[] = [];
+    const svData: BasicStoryAndAuthorType[] = [];
 
     const createsvThreadsURL = (pageNumber: number) =>
       `https://forum.sufficientvelocity.com/watched/threads?unread=0&page=${pageNumber}`;
@@ -63,7 +63,7 @@ async function getSufficientVelocityData() {
           const storyATag: HTMLAnchorElement =
             mainBlock.querySelector("a:not(.unreadLink)");
 
-          let storyName = storyATag.textContent.trim();
+          let storyTitle = storyATag.textContent.trim();
 
           let storyLink = storyATag.getAttribute("href") || "";
 
@@ -102,7 +102,7 @@ async function getSufficientVelocityData() {
 
           return {
             storyLink,
-            storyName,
+            storyTitle,
             authorLink,
             authorName
           };
