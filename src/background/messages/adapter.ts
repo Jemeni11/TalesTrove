@@ -11,7 +11,7 @@ import {
 import type {
   FFProcessedStoryData,
   SubscriptionResult,
-  XenForoDataType
+  BasicStoryAndAuthorType
 } from "~types";
 
 const handler: PlasmoMessaging.MessageHandler = async (req, res) => {
@@ -19,7 +19,7 @@ const handler: PlasmoMessaging.MessageHandler = async (req, res) => {
 
   try {
     let message:
-      | XenForoDataType[]
+      | BasicStoryAndAuthorType[]
       | FFProcessedStoryData[]
       | SubscriptionResult;
 
