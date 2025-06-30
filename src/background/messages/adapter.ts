@@ -4,18 +4,19 @@ import {
   getArchiveOfOurOwnData,
   getFFFavoritesData,
   getFFFollowingData,
-  getQuestionableQuestingData,
-  getSpaceBattlesData,
-  getSufficientVelocityData
+  getXenForoData
 } from "~adapters";
 import type {
+  BasicStoryAndAuthorType,
   FFProcessedStoryData,
   SubscriptionResult,
-  BasicStoryAndAuthorType
+  XenForoSites
 } from "~types";
 
 const handler: PlasmoMessaging.MessageHandler = async (req, res) => {
   const site_id: string = req.body.id;
+  const index = site_id.indexOf("Adapter");
+  const result = index !== -1 ? site_id.slice(0, index) : site_id;
 
   try {
     let message:
@@ -34,30 +35,22 @@ const handler: PlasmoMessaging.MessageHandler = async (req, res) => {
           types_array
         );
         break;
-      case "QuestionableQuestingAdapter":
-        message = await getQuestionableQuestingData();
-        break;
-      case "SpaceBattlesAdapter":
-        message = await getSpaceBattlesData();
-        break;
-      case "SufficientVelocityAdapter":
-        message = await getSufficientVelocityData();
-        break;
       case "FanFictionNetFollowingAdapter":
         message = await getFFFollowingData();
         break;
       case "FanFictionNetFavoritesAdapter":
         message = await getFFFavoritesData();
         break;
+      case "QuestionableQuestingAdapter":
+      case "SpaceBattlesAdapter":
+      case "SufficientVelocityAdapter":
+        message = await getXenForoData(result as XenForoSites);
       default:
         message = [];
     }
 
     res.send({ message });
   } catch (error) {
-    const index = site_id.indexOf("Adapter");
-    const result = index !== -1 ? site_id.slice(0, index) : site_id;
-
     error.name = result;
     console.error(error);
 
