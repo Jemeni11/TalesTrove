@@ -33,7 +33,7 @@ function cleanAuthorArray(array: authorType[]): authorType[] {
 async function getArchiveOfOurOwnData(
   username: string,
   alternateTLD: boolean,
-  types?: ("author" | "work" | "series")[],
+  types?: ("author" | "work" | "series")[]
 ): Promise<SubscriptionResult> {
   const adapterName = "ArchiveOfOurOwnAdapter";
 
@@ -42,7 +42,7 @@ async function getArchiveOfOurOwnData(
   }
 
   try {
-    const tld = alternateTLD ? "gay" : "org"
+    const tld = alternateTLD ? "gay" : "org";
     const baseURL = `https://archiveofourown.${tld}/users/${username}/subscriptions`;
     const typeQueryParam = types?.length === 1 ? `type=${types[0]}` : "";
 
@@ -143,9 +143,11 @@ async function getArchiveOfOurOwnData(
                 id: workLink,
                 title: workTitle,
                 link: workLink,
-                authorName: ["Anonymous"],
-                authorLink: [
-                  `https://archiveofourown.${tld}/collections/anonymous`
+                authors: [
+                  {
+                    name: "Anonymous",
+                    link: `https://archiveofourown.${tld}/collections/anonymous`
+                  }
                 ]
               };
 
@@ -162,22 +164,18 @@ async function getArchiveOfOurOwnData(
             const workTitle = workAnchorTag.textContent!.trim();
             const isSeries = workAnchorTag.href.includes("/series/");
 
-            const authorNames = authorsAnchorTag.map((author) =>
-              author.textContent!.trim()
-            );
+            const authors = authorsAnchorTag.map((author) => ({
+              name: author.textContent!.trim(),
+              link: `https://archiveofourown.${tld}${author.href}`
+            }));
 
-            const authorLinks = authorsAnchorTag.map(
-              (author) => `https://archiveofourown.${tld}${author.href}`
-            );
-
-            const workLink = `https://archiveofourown.${tld}${workAnchorTag.href}`
+            const workLink = `https://archiveofourown.${tld}${workAnchorTag.href}`;
 
             const workObject = {
               id: workLink,
               title: workTitle,
               link: workLink,
-              authorName: authorNames,
-              authorLink: authorLinks
+              authors
             };
 
             if (isSeries) {
