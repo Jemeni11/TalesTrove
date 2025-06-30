@@ -1,6 +1,6 @@
 import { parseHTML } from "linkedom";
 
-import type { XenForoDataType } from "~types";
+import type { BasicStoryAndAuthorType } from "~types";
 import { customError } from "~utils";
 
 async function getQuestionableQuestingData() {
@@ -10,7 +10,7 @@ async function getQuestionableQuestingData() {
     let QQThreadsURL =
       "https://forum.questionablequesting.com/watched/threads?unread=0";
 
-    const QQData: XenForoDataType[] = [];
+    const QQData: BasicStoryAndAuthorType[] = [];
 
     const createQQThreadsURL = (pageNumber: number) =>
       `https://forum.questionablequesting.com/watched/threads?unread=0&page=${pageNumber}`;
@@ -60,7 +60,7 @@ async function getQuestionableQuestingData() {
             "div.structItem-title"
           ) as HTMLDivElement;
 
-          const storyName = Array.from(mainBlock.children)
+          const storyTitle = Array.from(mainBlock.children)
             .map((child) => child.textContent || "")
             .join(" ")
             .trim();
@@ -103,7 +103,7 @@ async function getQuestionableQuestingData() {
 
           return {
             storyLink,
-            storyName,
+            storyTitle,
             authorLink,
             authorName
           };
