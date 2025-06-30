@@ -1,28 +1,23 @@
-export type workObjectType = {
-  id: string;
-  title: string;
-  link: string;
-  authorName: string[];
-  authorLink: string[];
-};
-
 export type authorType = {
   name: string;
   link: string;
 };
 
-export type XenForoDataType = {
+export type workObjectType = {
+  id: string;
+  title: string;
+  link: string;
+  authors: authorType[];
+};
+
+export type BasicStoryAndAuthorType = {
   storyLink: string;
-  storyName: string;
+  storyTitle: string;
   authorLink: string;
   authorName: string;
 };
 
-export type FFProcessedStoryData = {
-  authorLink: string;
-  authorName: string;
-  storyLink: string;
-  storyTitle: string;
+export type FFProcessedStoryData = BasicStoryAndAuthorType & {
   dateCreated: string;
   dateUpdated: string;
 };
@@ -89,3 +84,16 @@ export type subDataParams = {
 }[keyof sitesDataType];
 
 export type expandedSectionsType = Record<sitesDataTypeKey, boolean>;
+
+export type XenForoSites =
+  | "QuestionableQuesting"
+  | "SpaceBattles"
+  | "SufficientVelocity";
+
+export type XenForoSiteConfig = {
+  [K in XenForoSites]: {
+    name: `${K}Adapter`;
+    baseUrl: string;
+    watchedThreadsPath: string;
+  };
+};
