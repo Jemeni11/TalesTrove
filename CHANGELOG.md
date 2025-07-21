@@ -20,6 +20,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Unified XenForo adapter interface (`getXenForoData`)
+- Declared `tabs` permission and made `tabs/talestrove.html` a web-accessible resource
+- Clicking the extension icon now opens the internal `tabs/talestrove.html` page
 
 ### Changed
 
@@ -37,6 +39,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Moved return statement outside try block in `getXenForoData` to ensure data is always returned, even if an error is caught
 - Added missing break in `adapter.ts` switch case for XenForo adapters to prevent unintended fall through.
+
+### Removed
+
+- `popup.tsx`
 
 ## [1.3.1] - 2025-06-29
 
