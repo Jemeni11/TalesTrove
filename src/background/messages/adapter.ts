@@ -45,6 +45,7 @@ const handler: PlasmoMessaging.MessageHandler = async (req, res) => {
       case "SpaceBattlesAdapter":
       case "SufficientVelocityAdapter":
         message = await getXenForoData(result as XenForoSites);
+        break;
       default:
         message = [];
     }
