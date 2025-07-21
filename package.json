@@ -57,6 +57,19 @@
       "https://forum.spacebattles.com/*",
       "https://forums.sufficientvelocity.com/*"
     ],
+    "permissions": [
+      "tabs"
+    ],
+    "web_accessible_resources": [
+      {
+        "matches": [
+          "<all_urls>"
+        ],
+        "resources": [
+          "tabs/talestrove.html"
+        ]
+      }
+    ],
     "browser_specific_settings": {
       "gecko": {
         "id": "talestrove@Jemeni11.github.com"
