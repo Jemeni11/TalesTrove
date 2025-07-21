@@ -119,11 +119,10 @@ async function getXenForoData(xenForoSite: XenForoSites) {
         currentPage++;
       }
     } while (currentPage <= numberOfPages);
-
-    return data;
   } catch (error) {
     customError(adapterName, "An error occurred while fetching data", error);
   }
+  return data;
 }
 
 export default getXenForoData;
