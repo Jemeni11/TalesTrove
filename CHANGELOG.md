@@ -31,6 +31,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Created dedicated `file_formats` directory
   - Added missing utility exports
 - Standardized property names (`storyTitle` vs `storyName`)
+- unify build/package scripts for multi-target support
+
+### Fixed
+
+- Moved return statement outside try block in `getXenForoData` to ensure data is always returned, even if an error is caught
+- Added missing break in `adapter.ts` switch case for XenForo adapters to prevent unintended fall through.
 
 ## [1.3.1] - 2025-06-29
 
