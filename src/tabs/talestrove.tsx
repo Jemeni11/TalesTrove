@@ -218,94 +218,58 @@ const useDownloadManager = (
 };
 
 const DownloadOptions: React.FC<{
-  isOpen: boolean;
-  onToggle: (isOpen: boolean) => void;
-  selectedSitesCount: number;
-  selectedFormatsCount: number;
   fileFormatState: fileFormatType;
-}> = ({
-  isOpen,
-  onToggle,
-  selectedSitesCount,
-  selectedFormatsCount,
-  fileFormatState
-}) => {
-  const resetAllOptions = useResetAllOptions();
+}> = ({ fileFormatState }) => {
   const toggleFileFormat = useToggleFileFormat();
 
   return (
-    <details
-      className="group"
-      open={isOpen}
-      onToggle={(e) => onToggle(e.currentTarget.open)}>
-      <summary className="flex items-center justify-between cursor-pointer list-none">
-        <span className="text-lg font-semibold">Download Files</span>
-        <ChevronDown
-          className={cn(
-            "h-4 w-4 transition-transform duration-200",
-            isOpen ? "transform rotate-180" : ""
-          )}
-        />
-      </summary>
-      <div className="mt-2 space-y-2">
-        <div className="flex justify-between items-center">
-          <span className="text-sm">
-            {selectedSitesCount} Site Option{selectedSitesCount !== 1 && "s"},{" "}
-            {selectedFormatsCount} Format{selectedFormatsCount !== 1 && "s"}{" "}
-            Selected
-          </span>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={resetAllOptions}
-            className="text-primary hover:text-primary">
-            Reset
-          </Button>
-        </div>
-        <SwitchItem
-          id="json"
-          icon={<JSONIcon />}
-          label="JSON"
-          checked={fileFormatState.json}
-          onCheckedChange={() => toggleFileFormat("json")}
-        />
-        <SwitchItem
-          id="txt"
-          icon={<TXTIcon />}
-          label="TXT"
-          checked={fileFormatState.txt}
-          onCheckedChange={() => toggleFileFormat("txt")}
-        />
-        <SwitchItem
-          id="csv"
-          icon={<CSVIcon />}
-          label="CSV"
-          checked={fileFormatState.csv}
-          onCheckedChange={() => toggleFileFormat("csv")}
-        />
-        <SwitchItem
-          id="html"
-          icon={<HTMLIcon />}
-          label="HTML"
-          checked={fileFormatState.html}
-          onCheckedChange={() => toggleFileFormat("html")}
-        />
-        <SwitchItem
-          id="bookmarksHtml"
-          icon={<BookmarksHTMLIcon />}
-          label="Bookmarks HTML"
-          checked={fileFormatState.bookmarksHtml}
-          onCheckedChange={() => toggleFileFormat("bookmarksHtml")}
-        />
-        <SwitchItem
-          id="linksOnly"
-          icon={<LinksOnlyTXTIcon />}
-          label="Links Only TXT"
-          checked={fileFormatState.linksOnly}
-          onCheckedChange={() => toggleFileFormat("linksOnly")}
-        />
-      </div>
-    </details>
+    <div className="p-4 space-y-2">
+      <h2 className="text-sm font-medium text-gray-500 uppercase mb-2">
+        Download Formats
+      </h2>
+      <SwitchItem
+        id="json"
+        icon={<JSONIcon />}
+        label="JSON"
+        checked={fileFormatState.json}
+        onCheckedChange={() => toggleFileFormat("json")}
+      />
+      <SwitchItem
+        id="txt"
+        icon={<TXTIcon />}
+        label="TXT"
+        checked={fileFormatState.txt}
+        onCheckedChange={() => toggleFileFormat("txt")}
+      />
+      <SwitchItem
+        id="csv"
+        icon={<CSVIcon />}
+        label="CSV"
+        checked={fileFormatState.csv}
+        onCheckedChange={() => toggleFileFormat("csv")}
+      />
+      <SwitchItem
+        id="html"
+        icon={<HTMLIcon />}
+        label="HTML"
+        checked={fileFormatState.html}
+        onCheckedChange={() => toggleFileFormat("html")}
+      />
+      <SwitchItem
+        id="bookmarksHtml"
+        icon={<BookmarksHTMLIcon />}
+        label="Bookmarks HTML"
+        checked={fileFormatState.bookmarksHtml}
+        onCheckedChange={() => toggleFileFormat("bookmarksHtml")}
+      />
+      <SwitchItem
+        id="linksOnly"
+        icon={<LinksOnlyTXTIcon />}
+        label="Links Only TXT"
+        checked={fileFormatState.linksOnly}
+        onCheckedChange={() => toggleFileFormat("linksOnly")}
+      />
+    </div>
   );
 };
 
@@ -319,24 +283,16 @@ export default function TalesTrove() {
       sufficientVelocity: false
     });
 
-  const [isDownloadOpen, setIsDownloadOpen] = useState(false);
-
   const fileFormatState = useAtomValue(fileFormatAtom);
   const sitesDataState = useAtomValue(sitesDataAtom);
-  const toggleSitesData = useToggleSitesData();
 
-  const [showStatusSection, setShowStatusSection] = useState(false);
-  const [statusSection, setStatusSection] = useState(false);
+  const toggleSitesData = useToggleSitesData();
+  const resetAllOptions = useResetAllOptions();
 
   const { handleDownload, isLoading, error, allErrors } = useDownloadManager(
     fileFormatState,
     sitesDataState
   );
-
-  const onDownloadClick = () => {
-    setShowStatusSection(true);
-    handleDownload();
-  };
 
   const toggleSection = (section: keyof expandedSectionsType) => {
     setExpandedSections((prev) => ({ ...prev, [section]: !prev[section] }));
@@ -355,58 +311,75 @@ export default function TalesTrove() {
     Object.values(fileFormatState).filter(Boolean).length;
 
   return (
-    <div className="w-[350px] bg-background text-foreground overflow-y-auto shadow-lg flex flex-col">
-      <Header />
-      <main className="p-4">
+    <div className="w-full min-h-screen sm:h-screen bg-background text-foreground shadow-lg flex flex-col sm:flex-row">
+      {/* Sidebar */}
+      <aside className="w-full sm:!w-64 flex flex-col justify-between shrink-0 border-r border-gray-200 bg-white">
+        <DownloadOptions fileFormatState={fileFormatState} />
+        <div className="flex flex-col gap-2 justify-between items-center">
+          <p className="text-sm">
+            {selectedSitesCount} Site Option{selectedSitesCount !== 1 && "s"}{" "}
+            Selected
+          </p>
+          <p className="text-sm">
+            {selectedFormatsCount} Format{selectedFormatsCount !== 1 && "s"}{" "}
+            Selected
+          </p>
+          <div className="p-4 w-full">
+            <Button
+              variant="outline"
+              onClick={resetAllOptions}
+              className="text-primary w-full hover:text-primary">
+              Reset
+            </Button>
+          </div>
+        </div>
+        <div className="bg-muted">
+          <div className="p-4">
+            <Button
+              onClick={handleDownload}
+              className="w-full rounded bg-[#344955] text-white hover:bg-[hsl(203,11%,14%)]"
+              disabled={
+                selectedSitesCount === 0 ||
+                selectedFormatsCount === 0 ||
+                isLoading
+              }>
+              <Download className="w-4 h-4 mr-2" />
+              {isLoading ? "Downloading..." : "Download Files"}
+            </Button>
+          </div>
+          <Footer />
+        </div>
+      </aside>
+
+      {/* Main panel */}
+      <main className="flex-1 p-6 overflow-y-auto bg-gray-50">
+        <Header />
         <Main
           expandedSections={expandedSections}
           onToggle={toggleSection}
           sitesDataState={sitesDataState}
           toggleSitesData={toggleSitesData}
         />
-        {showStatusSection && (
-          <Section
-            title="Status"
-            expanded={statusSection}
-            onToggle={() => setStatusSection((prev) => !prev)}>
-            <div className="text-sm max-h-[120px] overflow-y-auto">
-              {allErrors.length === 0 && <span>No errors :)</span>}
-              {allErrors.map((err) => (
-                <p key={err.name} className="mb-1">
-                  <strong>{err.name || "No Name"}</strong>
-                  <br />
-                  <span>{err.message || "No Message"}</span>
-                  <br />
-                  {err.cause && err.cause !== err.message && (
-                    <span>{`${err.cause}` || "No Cause"}</span>
-                  )}
-                </p>
-              ))}
-            </div>
-          </Section>
-        )}
+        <div className="text-sm max-h-[300px] overflow-y-auto space-y-4">
+          {allErrors.length === 0 ? (
+            <p>No errors 🎉</p>
+          ) : (
+            allErrors.map((err, i) => (
+              <div key={i} className="border rounded-lg p-3 bg-white shadow-sm">
+                <strong className="block font-semibold">
+                  {err.name || "Unknown Error"}
+                </strong>
+                <p className="text-gray-700">{err.message || "No message"}</p>
+                {err.cause && err.cause !== err.message && (
+                  <p className="text-gray-500 text-xs">{String(err.cause)}</p>
+                )}
+              </div>
+            ))
+          )}
+        </div>
+
         {error && <div className="text-red-500 text-sm mt-2">{error}</div>}
       </main>
-
-      <div className="mt-auto p-4 bg-muted">
-        <DownloadOptions
-          isOpen={isDownloadOpen}
-          onToggle={setIsDownloadOpen}
-          selectedSitesCount={selectedSitesCount}
-          selectedFormatsCount={selectedFormatsCount}
-          fileFormatState={fileFormatState}
-        />
-        <Button
-          onClick={onDownloadClick}
-          className="w-full rounded mt-4 bg-[#344955] text-white hover:bg-[hsl(203,11%,14%)]"
-          disabled={
-            selectedSitesCount === 0 || selectedFormatsCount === 0 || isLoading
-          }>
-          <Download className="w-4 h-4 mr-2" />
-          {isLoading ? "Downloading..." : "Download Files"}
-        </Button>
-        <Footer />
-      </div>
     </div>
   );
 }
