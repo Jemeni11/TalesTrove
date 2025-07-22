@@ -25,6 +25,10 @@ const getDocument = async (
     }
   }
 
+  if (response.status == 302 && adapterName === "ArchiveOfOurOwnAdapter") {
+    customError({ name: adapterName, message: "User isn't logged in" });
+  }
+
   const baseTag = document.createElement("base");
   baseTag.href = baseURL;
   document.head.prepend(baseTag);
