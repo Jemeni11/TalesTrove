@@ -1,7 +1,5 @@
-import { parseHTML } from "linkedom";
-
 import type { FFData, FFProcessedStoryData } from "~types";
-import { customError } from "~utils";
+import { customError, getDocument } from "~utils";
 
 const FFFavoritesMobileURL = "https://m.fanfiction.net/m/f_story.php";
 
@@ -38,16 +36,11 @@ async function getFanFictionNetStoryData(
   const adapterName = "FanFictionNetAdapter";
 
   try {
-    const response = await fetch(url, {
-      mode: "cors",
-      credentials: "include",
-      headers: {
-        "User-Agent": navigator.userAgent
-      }
-    });
-
-    const htmlText = await response.text();
-    const { document } = parseHTML(htmlText);
+    const document = await getDocument(
+      url,
+      adapterName,
+      "https://m.fanfiction.net"
+    );
 
     const guiWarningText =
       document.querySelector("span.gui_warning")?.textContent;
