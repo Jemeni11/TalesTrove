@@ -4,31 +4,15 @@ import {
   getFFFollowingData,
   getXenForoData
 } from "~adapters";
-import type {
-  BasicStoryAndAuthorType,
-  FFProcessedStoryData,
-  SubscriptionResult,
-  XenForoSites
-} from "~types";
+import type { SerializableError, SuccessReturn, XenForoSites } from "~types";
 
 type AdapterSuccess = {
-  message:
-    | BasicStoryAndAuthorType[]
-    | FFProcessedStoryData[]
-    | SubscriptionResult;
+  message: SuccessReturn;
 };
 
 type AdapterError = {
-  error: {
-    name: string;
-    message?: string;
-    cause?: unknown;
-    stack?: string;
-  };
-  message?:
-    | BasicStoryAndAuthorType[]
-    | FFProcessedStoryData[]
-    | SubscriptionResult;
+  error: SerializableError;
+  message?: SuccessReturn;
 };
 
 async function adapterHandler(
