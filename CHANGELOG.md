@@ -33,7 +33,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Created dedicated `file_formats` directory
   - Added missing utility exports
 - Standardized property names (`storyTitle` vs `storyName`)
-- unify build/package scripts for multi-target support
+- Unify build/package scripts for multi-target support
+- Refactored `customError` utility to accept a single options object and support attaching partial context
+- Updated AO3, FF, XenForo adapter to use new object-based `customError` util
+- AO3 Adapter now returns partial results in the event of an error, improving resilience
+- Updated `getDocument` to inject a `<base>` tag using the provided `baseURL`, ensuring that relative URLs resolve correctly during DOM parsing
+- Improved error handling for 401/403 responses by checking for specific block messages
+- XenForo adapter now passes `baseURL` to `getDocument` for accurate relative URL resolution
 
 ### Fixed
 
