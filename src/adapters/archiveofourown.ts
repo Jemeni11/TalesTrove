@@ -38,7 +38,27 @@ async function getArchiveOfOurOwnData(
   const adapterName = "ArchiveOfOurOwnAdapter";
 
   if (username.trim() === "") {
-    customError(adapterName, "No Username");
+    customError({ name: adapterName, message: "No Username" });
+  }
+
+  const authors: authorType[] = [];
+  const works: workObjectType[] = [];
+  const series: workObjectType[] = [];
+
+  function buildResult() {
+    const result: SubscriptionResult = {
+      authors: cleanAuthorArray(authors),
+      works: cleanWorkArray(works),
+      series: cleanWorkArray(series)
+    };
+
+    if (types && types.length < 3) {
+      if (!types.includes("author")) delete result.authors;
+      if (!types.includes("work")) delete result.works;
+      if (!types.includes("series")) delete result.series;
+    }
+
+    return result;
   }
 
   try {
@@ -66,10 +86,6 @@ async function getArchiveOfOurOwnData(
     https://archiveofourown.org/users/stoleThunderNotLightning/subscriptions?type=series
    */
 
-    const authors: authorType[] = [];
-    const works: workObjectType[] = [];
-    const series: workObjectType[] = [];
-
     let numberOfPages = 1;
     let i = 1;
 
@@ -91,7 +107,7 @@ async function getArchiveOfOurOwnData(
         });
 
         if (response.status == 302) {
-          customError(adapterName, "User isn't logged in");
+          customError({ name: adapterName, message: "User isn't logged in" });
         }
 
         const htmlText = await response.text();
@@ -101,7 +117,7 @@ async function getArchiveOfOurOwnData(
           document.querySelector(".flash.error")?.textContent ==
           "Sorry, you don't have permission to access the page you were trying to reach. Please log in."
         ) {
-          customError(adapterName, "User isn't logged in");
+          customError({ name: adapterName, message: "User isn't logged in" });
         }
 
         const main: HTMLDivElement = document.querySelector("div#main")!;
@@ -118,7 +134,10 @@ async function getArchiveOfOurOwnData(
         );
 
         if (links.length == 0) {
-          customError(adapterName, "There's no data for this site");
+          customError({
+            name: adapterName,
+            message: "There's no data for this site"
+          });
         }
 
         for (let linkArray of links) {
@@ -203,29 +222,24 @@ async function getArchiveOfOurOwnData(
           }
         }
       } catch (error) {
-        customError(adapterName, `Failed to fetch data from page ${i}`, error);
+        customError({
+          name: adapterName,
+          message: `Failed to fetch data from page ${i}`,
+          originalError: error
+        });
       } finally {
         i++;
       }
     } while (i <= numberOfPages);
 
-    // Prepopulate the result with all data
-    const result: SubscriptionResult = {
-      authors: cleanAuthorArray(authors),
-      works: cleanWorkArray(works),
-      series: cleanWorkArray(series)
-    };
-
-    // Remove unwanted keys based on `types`
-    if (types && types.length < 3) {
-      if (!types.includes("author")) delete result.authors;
-      if (!types.includes("work")) delete result.works;
-      if (!types.includes("series")) delete result.series;
-    }
-
-    return result;
+    return buildResult();
   } catch (error) {
-    customError(adapterName, "An error occurred while fetching data", error);
+    customError({
+      name: adapterName,
+      message: "An error occurred while fetching data",
+      originalError: error,
+      partial: buildResult()
+    });
   }
 }
 
