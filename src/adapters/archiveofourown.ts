@@ -210,7 +210,7 @@ async function getArchiveOfOurOwnData(
       } catch (error) {
         customError({
           name: adapterName,
-          message: `Failed to fetch data from page ${i}`,
+          message: `Failed to fetch data from page ${i}\nError =>${error?.message}`,
           originalError: error
         });
       } finally {
@@ -222,7 +222,7 @@ async function getArchiveOfOurOwnData(
   } catch (error) {
     customError({
       name: adapterName,
-      message: "An error occurred while fetching data",
+      message: error?.message ?? "An error occurred while fetching data",
       originalError: error,
       partial: buildResult()
     });

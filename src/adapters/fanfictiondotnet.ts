@@ -103,7 +103,7 @@ async function getFanFictionNetStoryData(
   } catch (error) {
     customError({
       name: adapterName,
-      message: "An error occurred while fetching data",
+      message: error?.message ?? "An error occurred while fetching data",
       originalError: error
     });
   }
