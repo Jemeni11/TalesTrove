@@ -40,11 +40,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated `getDocument` to inject a `<base>` tag using the provided `baseURL`, ensuring that relative URLs resolve correctly during DOM parsing
 - Improved error handling for 401/403 responses by checking for specific block messages
 - XenForo adapter now passes `baseURL` to `getDocument` for accurate relative URL resolution
+- FanFiction.Net adapter now uses the shared `getDocument` utility to handle fetching and DOM parsing
+- Archive of Our Own adapter now uses the shared `getDocument` utility for DOM parsing and login detection
 
 ### Fixed
 
 - Moved return statement outside try block in `getXenForoData` to ensure data is always returned, even if an error is caught
 - Added missing break in `adapter.ts` switch case for XenForo adapters to prevent unintended fall through.
+- Added explicit check for 302 redirects from AO3 indicating that the user is not logged in
 
 ### Removed
 
