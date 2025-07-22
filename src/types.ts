@@ -97,3 +97,15 @@ export type XenForoSiteConfig = {
     watchedThreadsPath: string;
   };
 };
+
+export type SerializableError = {
+  name: string;
+  message?: string;
+  cause?: unknown;
+  stack?: string;
+};
+
+export type SuccessReturn =
+  | BasicStoryAndAuthorType[]
+  | FFProcessedStoryData[]
+  | SubscriptionResult;
