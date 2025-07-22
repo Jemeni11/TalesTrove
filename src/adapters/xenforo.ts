@@ -47,14 +47,21 @@ async function getXenForoData(xenForoSite: XenForoSites) {
         const requestUrl =
           currentPage > 1 ? createThreadsURL(currentPage) : baseUrl;
 
-        const document = await getDocument(requestUrl.toString(), adapterName);
+        const document = await getDocument(
+          requestUrl.toString(),
+          adapterName,
+          baseUrl.toString()
+        );
 
         const threadsList = document.querySelector(
           "form[action='/watched/threads/update'] div.structItemContainer"
         );
 
         if (!threadsList || !(threadsList instanceof HTMLDivElement)) {
-          customError(adapterName, "There's no data for this site");
+          customError({
+            name: adapterName,
+            message: "There's no data for this site"
+          });
         }
 
         const threadItems = Array.from(
@@ -110,17 +117,23 @@ async function getXenForoData(xenForoSite: XenForoSites) {
           }
         }
       } catch (error) {
-        customError(
-          adapterName,
-          `Failed to fetch data from page ${currentPage}`,
-          error
-        );
+        customError({
+          name: adapterName,
+          message: `Failed to fetch data from page ${currentPage}`,
+          originalError: error,
+          partial: data
+        });
       } finally {
         currentPage++;
       }
     } while (currentPage <= numberOfPages);
   } catch (error) {
-    customError(adapterName, "An error occurred while fetching data", error);
+    customError({
+      name: adapterName,
+      message: "An error occurred while fetching data",
+      originalError: error,
+      partial: data
+    });
   }
   return data;
 }
