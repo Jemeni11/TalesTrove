@@ -22,6 +22,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Unified XenForo adapter interface (`getXenForoData`)
 - Declared `tabs` permission and made `tabs/talestrove.html` a web-accessible resource
 - Clicking the extension icon now opens the internal `tabs/talestrove.html` page
+- Added `SerializableError` and `SuccessReturn` utility types
 
 ### Changed
 
@@ -42,6 +43,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - XenForo adapter now passes `baseURL` to `getDocument` for accurate relative URL resolution
 - FanFiction.Net adapter now uses the shared `getDocument` utility to handle fetching and DOM parsing
 - Archive of Our Own adapter now uses the shared `getDocument` utility for DOM parsing and login detection
+- Removed background script adapter message handler (`background/messages/adapter.ts`)
+- Introduced a unified `adapterHandler` utility for directly invoking adapter logic without messaging
+- Refactored `adapterHandler` to use centralized `SerializableError` and `SuccessReturn` types from `~types`
 
 ### Fixed
 
