@@ -1,6 +1,4 @@
-import { parseHTML } from "linkedom";
-
-import { customError } from "~utils";
+import { customError, delay, getDocument } from "~utils";
 
 import type { authorType, SubscriptionResult, workObjectType } from "../types";
 
@@ -89,29 +87,17 @@ async function getArchiveOfOurOwnData(
     let numberOfPages = 1;
     let i = 1;
 
-    const delay = (ms: number) =>
-      new Promise((resolve) => setTimeout(resolve, ms));
-
     do {
       try {
         if (i > 1) {
           ao3SubscriptionURL = createAO3SubscriptionURL(i);
         }
 
-        const response = await fetch(ao3SubscriptionURL, {
-          mode: "cors",
-          credentials: "include",
-          headers: {
-            "User-Agent": navigator.userAgent
-          }
-        });
-
-        if (response.status == 302) {
-          customError({ name: adapterName, message: "User isn't logged in" });
-        }
-
-        const htmlText = await response.text();
-        const { document } = parseHTML(htmlText);
+        const document = await getDocument(
+          ao3SubscriptionURL,
+          adapterName,
+          `https://archiveofourown.${tld}/`
+        );
 
         if (
           document.querySelector(".flash.error")?.textContent ==
