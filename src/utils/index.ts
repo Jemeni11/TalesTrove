@@ -1,3 +1,4 @@
+import adapterHandler from "./adapterHandler";
 import customError from "./customError";
 import delay from "./delay";
 import saveBookmarkHTMLFile from "./file_formats/bookmark_html";
@@ -10,14 +11,15 @@ import getDocument from "./getDocument";
 import handleExport from "./handleExport";
 
 export {
-  saveCSVFile,
-  saveJSONFile,
-  saveHTMLFile,
-  saveLinksOnlyTXTFile,
-  saveBookmarkHTMLFile,
-  saveTXTFile,
-  handleExport,
+  adapterHandler,
   customError,
+  delay,
+  saveBookmarkHTMLFile,
+  saveCSVFile,
+  saveHTMLFile,
+  saveJSONFile,
+  saveLinksOnlyTXTFile,
+  saveTXTFile,
   getDocument,
-  delay
+  handleExport
 };
