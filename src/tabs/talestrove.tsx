@@ -26,14 +26,13 @@ import type {
   FFProcessedStoryData,
   fileFormatType,
   fileFormatTypeKey,
+  SerializableError,
   sitesDataType,
   SubscriptionResult
 } from "~types";
-import { handleExport } from "~utils";
+import { adapterHandler, handleExport } from "~utils";
 
 import "../style.css";
-
-import { sendToBackground } from "@plasmohq/messaging";
 
 const useDownloadManager = (
   fileFormatState: fileFormatType,
@@ -41,7 +40,7 @@ const useDownloadManager = (
 ) => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [allErrors, setAllErrors] = useState<(Error | undefined)[]>([]);
+  const [allErrors, setAllErrors] = useState<SerializableError[]>([]);
 
   const getSelectedFormats = () =>
     Object.entries(fileFormatState)
@@ -58,14 +57,27 @@ const useDownloadManager = (
     exportHandler: (data: any, formats: fileFormatTypeKey[]) => void;
   }) => {
     try {
-      const response = await sendToBackground({
-        name: "adapter",
-        body: { id: adapterId, ...body }
-      });
+      const response = await adapterHandler(adapterId, body);
 
-      try {
-        exportHandler(response.message, getSelectedFormats());
-      } catch {
+      if ("message" in response) {
+        try {
+          exportHandler(response.message, getSelectedFormats());
+        } catch (err) {
+          setAllErrors((prev) => [
+            ...prev,
+            {
+              name: err instanceof Error ? err.name : "ExportHandlerError",
+              message:
+                err instanceof Error
+                  ? err.message
+                  : "Unknown error during export",
+              stack: err instanceof Error ? err.stack : undefined
+            }
+          ]);
+        }
+      }
+
+      if ("error" in response) {
         setAllErrors((prev) => [...prev, response.error]);
       }
     } catch (error) {
