@@ -1,5 +1,3 @@
-import type { PlasmoMessaging } from "@plasmohq/messaging";
-
 import {
   getArchiveOfOurOwnData,
   getFFFavoritesData,
@@ -13,25 +11,52 @@ import type {
   XenForoSites
 } from "~types";
 
-const handler: PlasmoMessaging.MessageHandler = async (req, res) => {
-  const site_id: string = req.body.id;
+type AdapterSuccess = {
+  message:
+    | BasicStoryAndAuthorType[]
+    | FFProcessedStoryData[]
+    | SubscriptionResult;
+};
+
+type AdapterError = {
+  error: {
+    name: string;
+    message?: string;
+    cause?: unknown;
+    stack?: string;
+  };
+  message?:
+    | BasicStoryAndAuthorType[]
+    | FFProcessedStoryData[]
+    | SubscriptionResult;
+};
+
+async function adapterHandler(
+  site_id: string,
+  body: {
+    type?: Partial<Record<"author" | "work" | "series", boolean>>;
+    username?: string;
+    alternateTLD?: boolean;
+  }
+): Promise<AdapterSuccess | AdapterError> {
   const index = site_id.indexOf("Adapter");
   const result = index !== -1 ? site_id.slice(0, index) : site_id;
 
   try {
-    let message:
-      | BasicStoryAndAuthorType[]
-      | FFProcessedStoryData[]
-      | SubscriptionResult;
+    let message: AdapterSuccess["message"];
 
     switch (site_id) {
       case "ArchiveOfOurOwnAdapter":
-        const types_array = Object.entries(req.body.type)
-          .filter(([_, value]) => value)
-          .map(([key]) => key) as ("author" | "work" | "series")[];
+        const types_array =
+          body.type != null
+            ? (Object.entries(body.type)
+                .filter(([_, value]) => value)
+                .map(([key]) => key) as ("author" | "work" | "series")[])
+            : [];
+
         message = await getArchiveOfOurOwnData(
-          req.body?.username,
-          req.body?.alternateTLD,
+          body.username,
+          body.alternateTLD,
           types_array
         );
         break;
@@ -50,20 +75,22 @@ const handler: PlasmoMessaging.MessageHandler = async (req, res) => {
         message = [];
     }
 
-    res.send({ message });
+    return { message };
   } catch (error) {
-    error.name = result;
     console.error(error);
 
-    res.send({
+    const partial = (error as any).partial;
+
+    return {
       error: {
         name: error.name,
         message: error.message,
         cause: error.cause,
         stack: error.stack
-      }
-    });
+      },
+      ...(partial && { message: partial })
+    };
   }
-};
+}
 
-export default handler;
+export default adapterHandler;
