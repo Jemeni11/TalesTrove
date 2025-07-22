@@ -1,20 +1,35 @@
-import { parseHTML } from "linkedom";
-
 import customError from "./customError";
 
-const getDocument = async (url: string, adapterName: string) => {
+const getDocument = async (
+  url: string,
+  adapterName: string,
+  baseURL: string
+) => {
   const response = await fetch(url, {
     mode: "cors",
     credentials: "include",
     headers: { "User-Agent": navigator.userAgent }
   });
+  const html = await response.text();
+  const document = new DOMParser().parseFromString(html, "text/html");
 
   if (response.status === 403 || response.status === 401) {
-    customError(adapterName, "User isn't logged in");
+    const blockMessage = document
+      .querySelector(".blockMessage")
+      ?.textContent?.trim();
+
+    if (blockMessage === "This user's profile is not available.") {
+      customError({ name: adapterName, message: blockMessage });
+    } else {
+      customError({ name: adapterName, message: "User isn't logged in" });
+    }
   }
 
-  const html = await response.text();
-  return parseHTML(html).document;
+  const baseTag = document.createElement("base");
+  baseTag.href = baseURL;
+  document.head.prepend(baseTag);
+
+  return document;
 };
 
 export default getDocument;
