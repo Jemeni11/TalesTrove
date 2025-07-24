@@ -57,6 +57,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 
 - Legacy popup UI (`popup.tsx`)
+- Removed `@plasmohq/messaging` and `linkedom`
 
 ## [1.3.1] - 2025-06-29
 
