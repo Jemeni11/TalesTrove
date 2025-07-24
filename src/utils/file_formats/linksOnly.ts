@@ -1,13 +1,19 @@
 import type {
   authorType,
+  BasicStoryAndAuthorType,
   FFProcessedStoryData,
-  workObjectType,
-  XenForoDataType
+  workObjectType
 } from "~types";
+import {
+  isAuthorArray,
+  isFFProcessedStoryDataArray,
+  isQQDataArray,
+  isWorkObjectArray
+} from "~utils/type_guards";
 
 export default function saveLinksOnlyTXTFile(
   data:
-    | XenForoDataType[]
+    | BasicStoryAndAuthorType[]
     | FFProcessedStoryData[]
     | workObjectType[]
     | authorType[],
@@ -21,9 +27,9 @@ export default function saveLinksOnlyTXTFile(
   let content = "";
 
   // Process based on the type of data
-  if (isQQDataArray(data)) {
+  if (isFFProcessedStoryDataArray(data)) {
     content = data.map((item) => item.storyLink).join("\n");
-  } else if (isFFProcessedStoryDataArray(data)) {
+  } else if (isQQDataArray(data)) {
     content = data.map((item) => item.storyLink).join("\n");
   } else if (isWorkObjectArray(data)) {
     content = data.map((item) => item.link).join("\n");
@@ -45,23 +51,4 @@ export default function saveLinksOnlyTXTFile(
 
   // Clean up
   setTimeout(() => URL.revokeObjectURL(url), 100);
-}
-
-// Type Guards for Array
-function isQQDataArray(data: any[]): data is XenForoDataType[] {
-  return data.every((item) => "storyLink" in item && "storyName" in item);
-}
-
-function isFFProcessedStoryDataArray(
-  data: any[]
-): data is FFProcessedStoryData[] {
-  return data.every((item) => "storyTitle" in item && "dateCreated" in item);
-}
-
-function isWorkObjectArray(data: any[]): data is workObjectType[] {
-  return data.every((item) => "title" in item && "authorName" in item);
-}
-
-function isAuthorArray(data: any[]): data is authorType[] {
-  return data.every((item) => "name" in item && "link" in item);
 }

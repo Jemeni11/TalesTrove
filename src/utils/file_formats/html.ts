@@ -2,21 +2,21 @@ import type {
   authorType,
   FFProcessedStoryData,
   workObjectType,
-  XenForoDataType
+  BasicStoryAndAuthorType
 } from "~types";
 
 type HTMLConvertible =
   | workObjectType
   | authorType
   | FFProcessedStoryData
-  | XenForoDataType;
+  | BasicStoryAndAuthorType;
 
 export default function saveHTMLFile(
   data:
     | workObjectType[]
     | authorType[]
     | FFProcessedStoryData[]
-    | XenForoDataType[],
+    | BasicStoryAndAuthorType[],
   fileName: string
 ) {
   if (data.length === 0) {

@@ -1,6 +1,4 @@
-import { parseHTML } from "linkedom";
-
-import { customError } from "~utils";
+import { customError, delay, getDocument } from "~utils";
 
 import type { authorType, SubscriptionResult, workObjectType } from "../types";
 
@@ -33,16 +31,36 @@ function cleanAuthorArray(array: authorType[]): authorType[] {
 async function getArchiveOfOurOwnData(
   username: string,
   alternateTLD: boolean,
-  types?: ("author" | "work" | "series")[],
+  types?: ("author" | "work" | "series")[]
 ): Promise<SubscriptionResult> {
   const adapterName = "ArchiveOfOurOwnAdapter";
 
   if (username.trim() === "") {
-    customError(adapterName, "No Username");
+    customError({ name: adapterName, message: "No Username" });
+  }
+
+  const authors: authorType[] = [];
+  const works: workObjectType[] = [];
+  const series: workObjectType[] = [];
+
+  function buildResult() {
+    const result: SubscriptionResult = {
+      authors: cleanAuthorArray(authors),
+      works: cleanWorkArray(works),
+      series: cleanWorkArray(series)
+    };
+
+    if (types && types.length < 3) {
+      if (!types.includes("author")) delete result.authors;
+      if (!types.includes("work")) delete result.works;
+      if (!types.includes("series")) delete result.series;
+    }
+
+    return result;
   }
 
   try {
-    const tld = alternateTLD ? "gay" : "org"
+    const tld = alternateTLD ? "gay" : "org";
     const baseURL = `https://archiveofourown.${tld}/users/${username}/subscriptions`;
     const typeQueryParam = types?.length === 1 ? `type=${types[0]}` : "";
 
@@ -66,15 +84,8 @@ async function getArchiveOfOurOwnData(
     https://archiveofourown.org/users/stoleThunderNotLightning/subscriptions?type=series
    */
 
-    const authors: authorType[] = [];
-    const works: workObjectType[] = [];
-    const series: workObjectType[] = [];
-
     let numberOfPages = 1;
     let i = 1;
-
-    const delay = (ms: number) =>
-      new Promise((resolve) => setTimeout(resolve, ms));
 
     do {
       try {
@@ -82,26 +93,17 @@ async function getArchiveOfOurOwnData(
           ao3SubscriptionURL = createAO3SubscriptionURL(i);
         }
 
-        const response = await fetch(ao3SubscriptionURL, {
-          mode: "cors",
-          credentials: "include",
-          headers: {
-            "User-Agent": navigator.userAgent
-          }
-        });
-
-        if (response.status == 302) {
-          customError(adapterName, "User isn't logged in");
-        }
-
-        const htmlText = await response.text();
-        const { document } = parseHTML(htmlText);
+        const document = await getDocument(
+          ao3SubscriptionURL,
+          adapterName,
+          `https://archiveofourown.${tld}/`
+        );
 
         if (
           document.querySelector(".flash.error")?.textContent ==
           "Sorry, you don't have permission to access the page you were trying to reach. Please log in."
         ) {
-          customError(adapterName, "User isn't logged in");
+          customError({ name: adapterName, message: "User isn't logged in" });
         }
 
         const main: HTMLDivElement = document.querySelector("div#main")!;
@@ -118,7 +120,10 @@ async function getArchiveOfOurOwnData(
         );
 
         if (links.length == 0) {
-          customError(adapterName, "There's no data for this site");
+          customError({
+            name: adapterName,
+            message: "There's no data for this site"
+          });
         }
 
         for (let linkArray of links) {
@@ -143,9 +148,11 @@ async function getArchiveOfOurOwnData(
                 id: workLink,
                 title: workTitle,
                 link: workLink,
-                authorName: ["Anonymous"],
-                authorLink: [
-                  `https://archiveofourown.${tld}/collections/anonymous`
+                authors: [
+                  {
+                    name: "Anonymous",
+                    link: `https://archiveofourown.${tld}/collections/anonymous`
+                  }
                 ]
               };
 
@@ -162,22 +169,18 @@ async function getArchiveOfOurOwnData(
             const workTitle = workAnchorTag.textContent!.trim();
             const isSeries = workAnchorTag.href.includes("/series/");
 
-            const authorNames = authorsAnchorTag.map((author) =>
-              author.textContent!.trim()
-            );
+            const authors = authorsAnchorTag.map((author) => ({
+              name: author.textContent!.trim(),
+              link: `https://archiveofourown.${tld}${author.href}`
+            }));
 
-            const authorLinks = authorsAnchorTag.map(
-              (author) => `https://archiveofourown.${tld}${author.href}`
-            );
-
-            const workLink = `https://archiveofourown.${tld}${workAnchorTag.href}`
+            const workLink = `https://archiveofourown.${tld}${workAnchorTag.href}`;
 
             const workObject = {
               id: workLink,
               title: workTitle,
               link: workLink,
-              authorName: authorNames,
-              authorLink: authorLinks
+              authors
             };
 
             if (isSeries) {
@@ -205,29 +208,24 @@ async function getArchiveOfOurOwnData(
           }
         }
       } catch (error) {
-        customError(adapterName, `Failed to fetch data from page ${i}`, error);
+        customError({
+          name: adapterName,
+          message: `Failed to fetch data from page ${i}\nError =>${error?.message}`,
+          originalError: error
+        });
       } finally {
         i++;
       }
     } while (i <= numberOfPages);
 
-    // Prepopulate the result with all data
-    const result: SubscriptionResult = {
-      authors: cleanAuthorArray(authors),
-      works: cleanWorkArray(works),
-      series: cleanWorkArray(series)
-    };
-
-    // Remove unwanted keys based on `types`
-    if (types && types.length < 3) {
-      if (!types.includes("author")) delete result.authors;
-      if (!types.includes("work")) delete result.works;
-      if (!types.includes("series")) delete result.series;
-    }
-
-    return result;
+    return buildResult();
   } catch (error) {
-    customError(adapterName, "An error occurred while fetching data", error);
+    customError({
+      name: adapterName,
+      message: error?.message ?? "An error occurred while fetching data",
+      originalError: error,
+      partial: buildResult()
+    });
   }
 }
 

@@ -1,14 +1,27 @@
-export default function customError(
-  name: string,
-  message: string,
-  error?: Error,
-  cause?: unknown
-): never {
-  const newError = new Error(message, {
-    cause: cause ?? error?.cause ?? message
+type CustomErrorOptions = {
+  name: string;
+  message?: string;
+  cause?: unknown;
+  originalError?: Error;
+  partial?: unknown;
+};
+
+export default function customError({
+  name,
+  message,
+  cause,
+  originalError,
+  partial
+}: CustomErrorOptions): never {
+  const err = new Error(message ?? originalError?.message ?? "Unknown error", {
+    cause: cause ?? originalError?.cause
   });
 
-  newError.name = name;
+  err.name = name;
 
-  throw newError;
+  if (partial !== undefined) {
+    (err as any).partial = partial;
+  }
+
+  throw err;
 }

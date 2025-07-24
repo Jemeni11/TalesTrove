@@ -2,12 +2,12 @@ import type {
   authorType,
   FFProcessedStoryData,
   workObjectType,
-  XenForoDataType
+  BasicStoryAndAuthorType
 } from "~types";
 
 type JSONType =
   | workObjectType
-  | XenForoDataType
+  | BasicStoryAndAuthorType
   | FFProcessedStoryData
   | authorType;
 

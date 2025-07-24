@@ -1,7 +1,5 @@
-import { parseHTML } from "linkedom";
-
 import type { FFData, FFProcessedStoryData } from "~types";
-import { customError } from "~utils";
+import { customError, getDocument } from "~utils";
 
 const FFFavoritesMobileURL = "https://m.fanfiction.net/m/f_story.php";
 
@@ -38,22 +36,17 @@ async function getFanFictionNetStoryData(
   const adapterName = "FanFictionNetAdapter";
 
   try {
-    const response = await fetch(url, {
-      mode: "cors",
-      credentials: "include",
-      headers: {
-        "User-Agent": navigator.userAgent
-      }
-    });
-
-    const htmlText = await response.text();
-    const { document } = parseHTML(htmlText);
+    const document = await getDocument(
+      url,
+      adapterName,
+      "https://m.fanfiction.net"
+    );
 
     const guiWarningText =
       document.querySelector("span.gui_warning")?.textContent;
 
     if (guiWarningText && guiWarningText === "FanFiction.Net Login Required") {
-      customError(adapterName, "User isn't logged in");
+      customError({ name: adapterName, message: "User isn't logged in" });
     }
 
     const tableRows = Array.from(
@@ -64,7 +57,10 @@ async function getFanFictionNetStoryData(
     tableRows.shift(); // Removes the header row
 
     if (tableRows.length == 0) {
-      customError(adapterName, "There's no data for this site");
+      customError({
+        name: adapterName,
+        message: "There's no data for this site"
+      });
     }
 
     const tableRowsHTMLCollection = tableRows.map((row) => row[0].children);
@@ -105,7 +101,11 @@ async function getFanFictionNetStoryData(
 
     return processedStoryDataList;
   } catch (error) {
-    customError(adapterName, "An error occurred while fetching data", error);
+    customError({
+      name: adapterName,
+      message: error?.message ?? "An error occurred while fetching data",
+      originalError: error
+    });
   }
 }
 

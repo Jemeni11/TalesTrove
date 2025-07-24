@@ -1,19 +1,22 @@
 {
   "name": "tales-trove",
   "displayName": "TalesTrove",
-  "version": "1.3.1",
+  "version": "2.0.0",
   "description": "TalesTrove is a browser extension that allows users to easily save links to their favorite fictional stories and series.",
   "author": "Emmanuel C. Jemeni <emmanueljemeni@gmail.com>",
   "scripts": {
     "dev": "plasmo dev",
-    "devV": "plasmo dev --verbose",
-    "build": "plasmo build",
-    "buildZip": "plasmo build --zip",
-    "package": "plasmo package",
     "dev:firefox": "plasmo dev --target=firefox-mv2",
+    "devV": "plasmo dev --verbose",
     "devV:firefox": "plasmo dev --target=firefox-mv2 --verbose",
+    "build": "pnpm build:chrome && pnpm build:firefox",
+    "build:chrome": "plasmo build --target=chrome-mv3",
     "build:firefox": "plasmo build --target=firefox-mv2",
+    "buildZip": "pnpm buildZip:chrome && pnpm buildZip:firefox",
+    "buildZip:chrome": "plasmo build --target=chrome-mv3 --zip",
     "buildZip:firefox": "plasmo build --target=firefox-mv2 --zip",
+    "package": "pnpm package:chrome && pnpm package:firefox",
+    "package:chrome": "plasmo package --target=chrome-mv3",
     "package:firefox": "plasmo package --target=firefox-mv2"
   },
   "dependencies": {
@@ -53,6 +56,19 @@
       "https://forums.spacebattles.com/*",
       "https://forum.spacebattles.com/*",
       "https://forums.sufficientvelocity.com/*"
+    ],
+    "permissions": [
+      "tabs"
+    ],
+    "web_accessible_resources": [
+      {
+        "matches": [
+          "<all_urls>"
+        ],
+        "resources": [
+          "tabs/talestrove.html"
+        ]
+      }
     ],
     "browser_specific_settings": {
       "gecko": {

@@ -15,6 +15,49 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.0.0] - 2025-07-25
+
+### Added
+
+- Unified XenForo adapter interface (`getXenForoData`)
+- Declared `tabs` permission and made `tabs/talestrove.html` a web-accessible resource
+- Clicking the extension icon now opens the internal `tabs/talestrove.html` page
+- Added `SerializableError` and `SuccessReturn` utility types
+- Introduced `BuyMeACoffee` and `GitHubSponsors` icon components with external links
+
+### Changed
+
+- Complete type system refactor:
+  - Introduced `BasicStoryAndAuthorType` as base type
+  - Consolidated all XenForo adapters into single module
+  - Standardized property names (`storyTitle` vs `storyName`)
+- Utils & build:
+  - Reorganized utils (`file_formats`, unified exports) and unified build/package scripts for Chrome + Firefox.
+  - Refactored `customError` utility to accept a single options object and support attaching partial context
+  - Added shared `adapterHandler` and updated UI to call it directly (replacing background messaging).
+- Adapters:
+  - All adapters (AO3, FFN, XenForo) migrated to new `customError` + `getDocument` utilities with better login detection, partial result support (FF excluded), and relative URL resolution.
+  - Improved error handling for 401/403 block messages
+  - AO3: clearer login detection via 302
+- UI:
+  - Redesigned download sidebar (always visible; desktop split layout).
+  - Improved error display formatting and overflow handling
+  - Adjusted header spacing to match new layout
+  - Tweak spacing in download section and add heading to error list
+- Removed background messaging system (`background/messages/adapter.ts`)
+- Improved export error capture for better debugging
+- Footer: Updated layout to include donation links and animated heart.
+
+### Fixed
+
+- Always return data from `getXenForoData` even after errors
+- Added missing `break` in adapter switch (prevented fall through)
+- Improved adapter error messaging (AO3, FFN, XenForo now include original error text)
+
+### Removed
+
+- Legacy popup UI (`popup.tsx`)
+
 ## [1.3.1] - 2025-06-29
 
 ### Added
@@ -90,7 +133,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 Released TalesTrove
 
-[unreleased]: https://github.com/Jemeni11/TalesTrove/compare/v1.3.1...HEAD
+[unreleased]: https://github.com/Jemeni11/TalesTrove/compare/v2.0.0...HEAD
+[2.0.0]: https://github.com/Jemeni11/TalesTrove/releases/compare/v1.3.1...v2.0.0
 [1.3.1]: https://github.com/Jemeni11/TalesTrove/releases/compare/v1.3.0...v1.3.1
 [1.3.0]: https://github.com/Jemeni11/TalesTrove/releases/compare/v1.2.0...v1.3.0
 [1.2.0]: https://github.com/Jemeni11/TalesTrove/releases/compare/v1.1.0...v1.2.0

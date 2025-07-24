@@ -1,19 +1,25 @@
-import saveBookmarkHTMLFile from "./bookmark_html";
-import saveCSVFile from "./csv";
+import adapterHandler from "./adapterHandler";
 import customError from "./customError";
+import delay from "./delay";
+import saveBookmarkHTMLFile from "./file_formats/bookmark_html";
+import saveCSVFile from "./file_formats/csv";
+import saveHTMLFile from "./file_formats/html";
+import saveJSONFile from "./file_formats/json";
+import saveLinksOnlyTXTFile from "./file_formats/linksOnly";
+import saveTXTFile from "./file_formats/txt";
+import getDocument from "./getDocument";
 import handleExport from "./handleExport";
-import saveHTMLFile from "./html";
-import saveJSONFile from "./json";
-import saveLinksOnlyTXTFile from "./linksOnly";
-import saveTXTFile from "./txt";
 
 export {
-  saveCSVFile,
-  saveJSONFile,
-  saveHTMLFile,
-  saveLinksOnlyTXTFile,
+  adapterHandler,
+  customError,
+  delay,
   saveBookmarkHTMLFile,
+  saveCSVFile,
+  saveHTMLFile,
+  saveJSONFile,
+  saveLinksOnlyTXTFile,
   saveTXTFile,
-  handleExport,
-  customError
+  getDocument,
+  handleExport
 };
