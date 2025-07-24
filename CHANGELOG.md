@@ -15,7 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [2.0.0] - 2025-06-30
+## [2.0.0] - 2025-07-25
 
 ### Added
 
@@ -23,39 +23,40 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Declared `tabs` permission and made `tabs/talestrove.html` a web-accessible resource
 - Clicking the extension icon now opens the internal `tabs/talestrove.html` page
 - Added `SerializableError` and `SuccessReturn` utility types
+- Introduced `BuyMeACoffee` and `GitHubSponsors` icon components with external links
 
 ### Changed
 
 - Complete type system refactor:
   - Introduced `BasicStoryAndAuthorType` as base type
   - Consolidated all XenForo adapters into single module
-  - Updated all type references across codebase
-- Reorganized utils file structure:
-  - Created dedicated `file_formats` directory
-  - Added missing utility exports
-- Standardized property names (`storyTitle` vs `storyName`)
-- Unify build/package scripts for multi-target support
-- Refactored `customError` utility to accept a single options object and support attaching partial context
-- Updated AO3, FF, XenForo adapter to use new object-based `customError` util
-- AO3 Adapter now returns partial results in the event of an error, improving resilience
-- Updated `getDocument` to inject a `<base>` tag using the provided `baseURL`, ensuring that relative URLs resolve correctly during DOM parsing
-- Improved error handling for 401/403 responses by checking for specific block messages
-- XenForo adapter now passes `baseURL` to `getDocument` for accurate relative URL resolution
-- FanFiction.Net adapter now uses the shared `getDocument` utility to handle fetching and DOM parsing
-- Archive of Our Own adapter now uses the shared `getDocument` utility for DOM parsing and login detection
-- Removed background script adapter message handler (`background/messages/adapter.ts`)
-- Introduced a unified `adapterHandler` utility for directly invoking adapter logic without messaging
-- Refactored `adapterHandler` to use centralized `SerializableError` and `SuccessReturn` types from `~types`
+  - Standardized property names (`storyTitle` vs `storyName`)
+- Utils & build:
+  - Reorganized utils (`file_formats`, unified exports) and unified build/package scripts for Chrome + Firefox.
+  - Refactored `customError` utility to accept a single options object and support attaching partial context
+  - Added shared `adapterHandler` and updated UI to call it directly (replacing background messaging).
+- Adapters:
+  - All adapters (AO3, FFN, XenForo) migrated to new `customError` + `getDocument` utilities with better login detection, partial result support (FF excluded), and relative URL resolution.
+  - Improved error handling for 401/403 block messages
+  - AO3: clearer login detection via 302
+- UI:
+  - Redesigned download sidebar (always visible; desktop split layout).
+  - Improved error display formatting and overflow handling
+  - Adjusted header spacing to match new layout
+  - Tweak spacing in download section and add heading to error list
+- Removed background messaging system (`background/messages/adapter.ts`)
+- Improved export error capture for better debugging
+- Footer: Updated layout to include donation links and animated heart.
 
 ### Fixed
 
-- Moved return statement outside try block in `getXenForoData` to ensure data is always returned, even if an error is caught
-- Added missing break in `adapter.ts` switch case for XenForo adapters to prevent unintended fall through.
-- Added explicit check for 302 redirects from AO3 indicating that the user is not logged in
+- Always return data from `getXenForoData` even after errors
+- Added missing `break` in adapter switch (prevented fall through)
+- Improved adapter error messaging (AO3, FFN, XenForo now include original error text)
 
 ### Removed
 
-- `popup.tsx`
+- Legacy popup UI (`popup.tsx`)
 
 ## [1.3.1] - 2025-06-29
 
