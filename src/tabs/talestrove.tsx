@@ -1,10 +1,9 @@
 import { useAtomValue } from "jotai";
 import { useState } from "react";
 
-import { Button, Footer, Header, Main, Section, SwitchItem } from "~components";
+import { Button, Footer, Header, Main, SwitchItem } from "~components";
 import {
   BookmarksHTMLIcon,
-  ChevronDown,
   CSVIcon,
   Download,
   HTMLIcon,
@@ -12,7 +11,6 @@ import {
   LinksOnlyTXTIcon,
   TXTIcon
 } from "~icons";
-import { cn } from "~lib/utils";
 import {
   fileFormatAtom,
   sitesDataAtom,
@@ -223,7 +221,7 @@ const DownloadOptions: React.FC<{
   const toggleFileFormat = useToggleFileFormat();
 
   return (
-    <div className="p-4 space-y-2">
+    <div className="p-4 space-y-1.5">
       <h2 className="text-sm font-medium text-gray-500 uppercase mb-2">
         Download Formats
       </h2>
@@ -364,17 +362,24 @@ export default function TalesTrove() {
           {allErrors.length === 0 ? (
             <p>No errors 🎉</p>
           ) : (
-            allErrors.map((err, i) => (
-              <div key={i} className="border rounded-lg p-3 bg-white shadow-sm">
-                <strong className="block font-semibold">
-                  {err.name || "Unknown Error"}
-                </strong>
-                <p className="text-gray-700">{err.message || "No message"}</p>
-                {err.cause && err.cause !== err.message && (
-                  <p className="text-gray-500 text-xs">{String(err.cause)}</p>
-                )}
-              </div>
-            ))
+            <>
+              <h2 className="text-sm font-medium text-gray-500 uppercase mb-2">
+                Errors
+              </h2>
+              {allErrors.map((err, i) => (
+                <div
+                  key={i}
+                  className="border rounded-lg p-3 bg-white shadow-sm">
+                  <strong className="block font-semibold">
+                    {err.name || "Unknown Error"}
+                  </strong>
+                  <p className="text-gray-700">{err.message || "No message"}</p>
+                  {err.cause && err.cause !== err.message && (
+                    <p className="text-gray-500 text-xs">{String(err.cause)}</p>
+                  )}
+                </div>
+              ))}
+            </>
           )}
         </div>
 
