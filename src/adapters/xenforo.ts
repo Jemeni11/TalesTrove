@@ -149,7 +149,7 @@ function extractStoryInfo(titleBlock: HTMLDivElement, baseUrl: string) {
   let storyTitle: string;
   let storyLink: string;
 
-  if (storyATag) {
+  if (!baseUrl.includes("questionablequesting")) {
     // SpaceBattles and SufficientVelocity style
     storyTitle = storyATag.textContent?.trim() || "";
     storyLink = storyATag.getAttribute("href") || "";
